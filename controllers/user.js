@@ -4,6 +4,7 @@ var Topic = require('../proxy').Topic;
 var Reply = require('../proxy').Reply;
 var Relation = require('../proxy').Relation;
 var TopicCollect = require('../proxy').TopicCollect;
+var TopicAttend = require('../proxy').TopicAttend;
 var TagCollect = require('../proxy').TagCollect;
 var utility = require('utility');
 
@@ -121,6 +122,8 @@ exports.setting = function (req, res, next) {
     profile = sanitize(profile).xss();
     var weibo = sanitize(req.body.weibo).trim();
     weibo = sanitize(weibo).xss();
+    var renren = sanitize(req.body.renren).trim();
+    renren = sanitize(renren).xss();
     var receive_at_mail = req.body.receive_at_mail === 'on';
     var receive_reply_mail = req.body.receive_reply_mail === 'on';
 
@@ -129,7 +132,7 @@ exports.setting = function (req, res, next) {
         if ((url.indexOf('http://') < 0) && (url.indexOf('https://') < 0)) {
           url = 'http://' + url;
         }
-        check(url, '不正确的个人网站。').isUrl();
+        check(url, '不正确的网址。').isUrl();
       } catch (e) {
         res.render('user/setting', {
           error: e.message,
@@ -141,6 +144,7 @@ exports.setting = function (req, res, next) {
           signature: signature,
           profile: profile,
           weibo: weibo,
+          renren:renren,
           receive_at_mail: receive_at_mail,
           receive_reply_mail: receive_reply_mail
         });
@@ -164,6 +168,32 @@ exports.setting = function (req, res, next) {
           signature: signature,
           profile: profile,
           weibo: weibo,
+          renren:renren,
+          receive_at_mail: receive_at_mail,
+          receive_reply_mail: receive_reply_mail
+        });
+        return;
+      }
+    }
+
+    if (renren) {
+      try {
+        if (renren.indexOf('http://') < 0) {
+          renren = 'http://' + renren;
+        }
+        check(renren, '不正确renren地址。').isUrl();
+      } catch (e) {
+        res.render('user/setting', {
+          error: e.message,
+          name: name,
+          email: email,
+          url: url,
+          profile_image_url: profile_image_url,
+          location: location,
+          signature: signature,
+          profile: profile,
+          weibo: weibo,
+          renren:renren,
           receive_at_mail: receive_at_mail,
           receive_reply_mail: receive_reply_mail
         });
@@ -181,6 +211,7 @@ exports.setting = function (req, res, next) {
       user.signature = signature;
       user.profile = profile;
       user.weibo = weibo;
+      user.renren= renren;
       user.receive_at_mail = receive_at_mail;
       user.receive_reply_mail = receive_reply_mail;
       user.save(function (err) {
@@ -192,6 +223,7 @@ exports.setting = function (req, res, next) {
     });
 
   }
+
   if (action === 'change_password') {
     var old_pass = sanitize(req.body.old_pass).trim();
     var new_pass = sanitize(req.body.new_pass).trim();
@@ -215,6 +247,7 @@ exports.setting = function (req, res, next) {
           signature: user.signature,
           profile: user.profile,
           weibo: user.weibo,
+          renren:user.renren,
           receive_at_mail: user.receive_at_mail,
           receive_reply_mail: user.receive_reply_mail
         });
@@ -240,6 +273,7 @@ exports.setting = function (req, res, next) {
           signature: user.signature,
           profile: user.profile,
           weibo: user.weibo,
+          renren:user.renren,
           receive_at_mail: user.receive_at_mail,
           receive_reply_mail: user.receive_reply_mail
         });
@@ -335,6 +369,21 @@ exports.un_follow = function (req, res, next) {
   });
 };
 
+
+// TO DO: render send message page, need to include the receiver id
+exports.send_msg = function (req, res,next) {
+  if (!req.session || !req.session.user) {
+    res.send('forbidden!');
+    return;
+  }
+   console.log('send msg');
+   var reciver = req.params.reciver_id;
+  var sender = req.params.sender_id;
+  res.render('message/send', {reciver:reciver,sender:sender});
+ return
+};
+
+
 exports.toggle_star = function (req, res, next) {
   if (!req.session.user || !req.session.user.is_admin) {
     res.send('forbidden!');
@@ -420,6 +469,50 @@ exports.get_collect_topics = function (req, res, next) {
     }));
   });
 };
+
+
+exports.get_attend_topics = function (req, res, next) {
+  var name = req.params.name;
+  User.getUserByName(name, function (err, user) {
+    if (err || !user) {
+      return next(err);
+    }
+
+    var page = Number(req.query.page) || 1;
+    var limit = config.list_attend_count;
+
+    var render = function (topics, pages) {
+      res.render('user/attend_topics', {
+        topics: topics,
+        current_page: page,
+        pages: pages,
+        user: user
+      });
+    };
+
+    var proxy = EventProxy.create('topics', 'pages', render);
+    proxy.fail(next);
+
+    TopicAttend.getTopicAttendsByUserId(user._id, proxy.done(function (docs) {
+      var ids = [];
+      for (var i = 0; i < docs.length; i++) {
+        ids.push(docs[i].topic_id);
+      }
+      var query = { _id: { '$in': ids } };
+      var opt = {
+        skip: (page - 1) * limit,
+        limit: limit,
+        sort: [ [ 'create_at', 'desc' ] ]
+      };
+      Topic.getTopicsByQuery(query, opt, proxy.done('topics'));
+      Topic.getCountByQuery(query, proxy.done(function (all_topics_count) {
+        var pages = Math.ceil(all_topics_count / limit);
+        proxy.emit('pages', pages);
+      }));
+    }));
+  });
+};
+
 
 exports.get_followings = function (req, res, next) {
   var name = req.params.name;

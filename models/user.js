@@ -13,6 +13,7 @@ var UserSchema = new Schema({
   signature: { type: String },
   profile: { type: String },
   weibo: { type: String },
+  renren: { type: String },
   avatar: { type: String },
 
   score: { type: Number, default: 0 },

@@ -26,7 +26,7 @@ exports.userRequired = function (req, res, next) {
  */
 exports.signinRequired = function (req, res, next) {
   if (!req.session.user) {
-    res.render('notify/notify', {error: '未登入用户不能发布话题。'});
+    res.render('notify/notify', {error: '未登入用户不能浏览，请点击右上方按钮登录或者注册。'});
     return;
   }
   next();

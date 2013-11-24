@@ -13,11 +13,17 @@
 			<% } %>
 		<% } %>
 
+		<% if (locals.current_user && current_user._id != user._id) { %>
+			
+				<button class='btn msg_btn' id='msg_btn' action='send_msg'>发送消息</button>
+
+		<% } %>
+
 		<div class='board clearfix'>
 			<div class='floor'>
 				<a href='/user/<%= user.name %>/tags/'><span class='big'><%= user.collect_tag_count %></span> 标签收藏</a>
 				<div class='space'></div>
-                                <a href='/user/<%= user.name %>/collections'><span class='big'><%= user.attend_topic_count %></span> 参与活动</a>
+                                <a href='/user/<%= user.name %>/activities'><span class='big'><%= user.attend_topic_count %></span> 参与活动</a>
 				<div class='space'></div>
                               <a href='/user/<%= user.name %>/collections'><span class='big'><%= user.collect_topic_count %></span> 话题收藏</a>
 			</div>
@@ -65,6 +71,17 @@
 				}	
 			}, 'json');	
 		});
+               
+             $('#msg_btn').click(function(){
+                 console.log(click);
+                 var params={
+                         receiver_id: '<%= user._id %>',
+                         _csrf: '<%- csrf %>'
+                         sender_id: '<%= current_user._id %>',
+                           };
+			$.post('/user/send_msg', params, function (data) {
+				}, 'json');
+               });
 	});
 </script>
 <% } %>

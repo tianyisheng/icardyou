@@ -76,6 +76,23 @@ exports.getMessagesByUserId = function (userId, callback) {
   Message.find({master_id: userId}, [], {sort: [['create_at', 'desc']], limit: 20}, callback);
 };
 
+
+
+/**
+ * 根据用户ID，获取 用户已发送消息列表
+ * Callback:
+ * - err, 数据库异常
+ * - messages, 消息列表
+ * @param {String} userId 用户ID
+ * @param {Function} callback 回调函数
+ */
+exports.getSentMessagesByUserId = function (userId, callback) {
+  Message.find({author_id: userId}, [], {sort: [['create_at', 'desc']], limit: 20}, callback);
+};
+
+
+
+
 /**
  * 根据用户ID，获取未读消息列表
  * Callback:

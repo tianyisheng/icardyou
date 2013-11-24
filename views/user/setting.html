@@ -40,7 +40,7 @@
 					</div>
 				</div>
 				<div class='control-group'>
-					<label class='control-label' for='url'>个人网站</label>
+					<label class='control-label' for='url'>豆瓣</label>
 					<div class='controls'>
 						<% if(locals.url){ %>
 						<input class='input-xlarge' id='url' name='url' size='30' type='text' value="<%= url %>" />
@@ -86,6 +86,16 @@
 						<input class='input-xlarge' id='weibo' name='weibo' size='30' type='text' value="<%= weibo %>" />
 						<% }else{ %>
 						<input class='input-xlarge' id='weibo' name='weibo' size='30' type='text' value='' />
+						<% } %>
+					</div>
+				</div>
+				<div class='control-group'>
+					<label class='control-label' for='renren'>人人</label>
+					<div class='controls'>
+						<% if(locals.weibo){ %>
+						<input class='input-xlarge' id='renren' name='renren' size='30' type='text' value="<%= renren %>" />
+						<% }else{ %>
+						<input class='input-xlarge' id='renren' name='renren' size='30' type='text' value='' />
 						<% } %>
 					</div>
 				</div>

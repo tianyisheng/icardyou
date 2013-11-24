@@ -32,6 +32,21 @@
 			中@了你
 		</span>
 	<% } %>
+	<% if (message.type == 'msg'){ %>
+		<span>
+			<a href="/user/<%= message.author.name %>" target='_blank'><%= message.author.name %></a>
+			说:
+			<%=message.content%>
+		</span>
+	<% } %>
+
+	<% if (message.type == 'attend'){ %>
+		<span>
+			<a href="/user/<%= message.author.name %>" target='_blank'><%= message.author.name %></a>
+			参加了你发起的活动：
+			<%=message.content%>
+		</span>
+	<% } %>
 
 	<% if (message.has_read) { %>
 	<span class="marked_icon"><img src='<%- config.site_static_host %>/public/images/checkmark_icon&16.png' title='消息已读'/></span>

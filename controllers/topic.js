@@ -438,6 +438,7 @@ exports.delete = function (req, res, next) {
   //删除回复，回复作者reply_count减1
   //删除topic_tag，标签topic_count减1
   //删除topic_collect，用户collect_topic_count减1
+ // 删除topic_attend
   if (!req.session.user || !req.session.user.is_admin) {
     return res.send({success: false, message: '无权限'});
   }
@@ -492,6 +493,7 @@ exports.top = function (req, res, next) {
 };
 
 exports.collect = function (req, res, next) {
+   console.log('collect');
   var topic_id = req.body.topic_id;
   Topic.getTopic(topic_id, function (err, topic) {
     if (err) {

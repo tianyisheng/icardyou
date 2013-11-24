@@ -22,6 +22,7 @@ var tools = require('./controllers/tools');
 var auth = require('./midderwares/auth');
 var limit = require('./midderwares/limit');
 var status = require('./controllers/status');
+var card = require('./controllers/card');
 
 module.exports = function (app) {
   // home page
@@ -42,28 +43,38 @@ module.exports = function (app) {
   app.post('/reset_pass', sign.update_pass);
 
   // user
-  app.get('/user/:name', user.index);
-  app.get('/setting', user.showSetting);
-  app.post('/setting', user.setting);
-  app.get('/stars', user.show_stars);
-  app.get('/users/top100', user.top100);
-  app.get('/user/:name/tags', user.get_collect_tags);
-  app.get('/user/:name/collections', user.get_collect_topics);
+  app.get('/user/:name', auth.signinRequired, user.index); //update here
+  app.get('/setting', auth.signinRequired,user.showSetting);
+  app.post('/setting', auth.signinRequired,user.setting);
+  app.get('/stars', auth.signinRequired,user.show_stars);
+  app.get('/users/top100', auth.signinRequired, user.top100);
+  app.get('/user/:name/tags', auth.signinRequired, user.get_collect_tags);
+  app.get('/user/:name/collections', auth.signinRequired,user.get_collect_topics);
+  app.get('/user/:name/activities', auth.signinRequired,user.get_attend_topics);
   app.get('/my/messages', message.index);
-  app.get('/user/:name/follower', user.get_followers);
-  app.get('/user/:name/following', user.get_followings);
-  app.get('/user/:name/topics', user.list_topics);
-  app.get('/user/:name/replies', user.list_replies);
-  app.get('/user/:name/init', user.list_init);
-  app.get('/user/:name/attend', user.list_attend);
+  app.get('/my/messages/send', message.send);
+  app.get('/messages/sent', message.indexSent);
+  app.get('/user/:name/follower', auth.signinRequired, user.get_followers);
+  app.get('/user/:name/following', auth.signinRequired, user.get_followings);
+  app.get('/user/:name/topics', auth.signinRequired, user.list_topics);
+  app.get('/user/:name/replies', auth.signinRequired, user.list_replies);
+  app.get('/user/:name/init', auth.signinRequired, user.list_init);
+  app.get('/user/:name/attend', auth.signinRequired, user.list_attend);
   app.post('/user/follow', auth.userRequired, user.follow);
   app.post('/user/un_follow', user.un_follow);
   app.post('/user/set_star', user.toggle_star);
   app.post('/user/cancel_star', user.toggle_star);
+  app.post('/user/send_msg', auth.signinRequired, user.send_msg);
 
   // message
-  app.post('/messages/mark_read', message.mark_read);
-  app.post('/messages/mark_all_read', message.mark_all_read);
+  app.post('/messages/mark_read', auth.signinRequired, message.mark_read);
+  app.post('/messages/mark_all_read', auth.signinRequired, message.mark_all_read);
+  app.post('/my/messages/send', auth.signinRequired, message.post);
+
+  // card
+  app.get('/sendpostcard', card.send);
+  app.get('/receivepostcard', card.receive);
+
 
   // tag
   app.get('/tags/edit', tag.edit_tags);
@@ -76,6 +87,8 @@ module.exports = function (app) {
   app.post('/tag/:id', auth.adminRequired, tag.update);
   app.post('/tag/collect', tag.collect);
   app.post('/tag/de_collect', auth.userRequired, tag.de_collect);
+  app.post('/tag/attend', tag.attend);
+  app.post('/tag/de_attend', auth.userRequired, tag.de_attend);
 
   // topic
   // 新建文章界面
@@ -97,6 +110,8 @@ module.exports = function (app) {
   app.post('/topic/:tid/edit', topic.update);
   app.post('/topic/collect', auth.userRequired, topic.collect);
   app.post('/topic/de_collect', auth.userRequired, topic.de_collect);
+ app.post('/topic/attend', auth.userRequired, topic.attend);
+  app.post('/topic/de_attend', auth.userRequired, topic.de_attend);
 
   // reply
   // 回复
@@ -105,7 +120,7 @@ module.exports = function (app) {
   app.post('/reply/:reply_id/delete', reply.delete);
 
   // upload
-  app.post('/upload/image', upload.uploadImage);
+  app.post('/upload/image',auth.signinRequired, upload.uploadImage);
 
   // tools
   app.get('/site_tools', tools.run_site_tools);

@@ -50,6 +50,13 @@
 						<a class='dark' href="<%= user.weibo %>" target='_blank'><%= user.weibo %></a>
 					</li>
 					<% } %>
+					<% if (user.renren) { %>
+					<li>
+						<img class='user_icon' src="<%- config.site_static_host %>/public/images/renren.png" />
+						<a class='dark' href="<%= user.renren %>" target='_blank'><%= user.renren %></a>
+					</li>
+					<% } %>
+
 				</ul>
 				<% if (user.profile) { %>
 					<p><%= user.profile %></p>

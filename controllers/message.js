@@ -18,7 +18,7 @@ exports.index = function (req, res, next) {
     }
     var messages = [];
     if (message_ids.length === 0) {
-      res.render('message/index', {has_read_messages: [], hasnot_read_messages: []});
+      res.render('message/index', {has_read_messages: [],hasnot_read_messages: []});
       return;
     }
     var proxy = new EventProxy();
@@ -52,6 +52,31 @@ exports.index = function (req, res, next) {
   });
 };
 
+
+
+
+exports.indexSent = function (req, res, next) {
+  if (!req.session.user) {
+    res.redirect('home');
+    return;
+  }
+
+  var has_sent_messages= [];
+  var user_id = req.session.user._id;
+  Message.getSentMessagesByUserId(user_id, function (err, docs) {
+    if (err) {
+      return next(err);
+    }
+    for (var i = 0; i < docs.length; i++) {
+      has_sent_messages.push(docs[i]._id);
+      }
+      res.render('message/sent', {has_sent_messages: has_sent_messages});
+      return;    
+  });
+};
+
+
+
 exports.mark_read = function (req, res, next) {
   if (!req.session || !req.session.user) {
     res.send('forbidden!');
@@ -80,6 +105,41 @@ exports.mark_read = function (req, res, next) {
     });
   });
 };
+
+
+
+// TO DO: implement post a message
+exports.post = function (req, res, next) {
+  if (!req.session || !req.session.user) {
+    res.send('forbidden!');
+    return;
+  }
+
+  var message_id = req.body.message_id;
+  Message.getMessageById(message_id, function (err, message) {
+    if (err) {
+      return next(err);
+    }
+    if (!message) {
+      res.json({status: 'failed'});
+      return;
+    }
+    if (message.master_id.toString() !== req.session.user._id.toString()) {
+      res.json({status: 'failed'});
+      return;
+    }
+    message.has_read = true;
+    message.save(function (err) {
+      if (err) {
+        return next(err);
+      }
+      res.json({status: 'success'});
+    });
+  });
+};
+
+
+
 
 exports.mark_all_read = function (req, res, next) {
   if (!req.session || !req.session.user) {

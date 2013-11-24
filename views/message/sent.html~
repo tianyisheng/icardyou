@@ -1,0 +1,19 @@
+<%- partial('sidebar') %>
+
+
+<div id='content'>
+	<div class='panel'>
+		<div class='header'>
+			<ul class='breadcrumb'>
+				<li><a href='/'>主页</a><span class='divider'>/</span></li>
+				<li class='active'>已发消息</li>
+			</ul>
+		</div>
+		<% if (locals.has_sent_messages) { %>
+		<%- partial('message/message', { collection: has_sent_messages, as: 'message' }) %>
+		<% } else { %>
+		<div class='inner'>
+			<p>无已发消息</p>
+		</div>
+		<% } %>
+</div>

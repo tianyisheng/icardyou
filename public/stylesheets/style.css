@@ -148,7 +148,7 @@ a.light:hover {
   line-height: 48px;
 }
 .cell .block.count {
-  width: 70px;
+  width: 100px;
   margin: 0px 8px;
 }
 .cell.message, .cell[message_id] {
@@ -422,6 +422,10 @@ img.unread {
 #collect_btn {
 
 }
+#attend_btn {
+
+}
+
 #backtotop {
   width: 24px;
   color: gray;

@@ -43,7 +43,7 @@
     <title><%= config.description %></title>
     <% } %>
   </head>
-  <body>
+  <body  onload="dynamicview()">
     <!-- navbar -->
     <div class='navbar'>
       <div class='navbar-inner'>

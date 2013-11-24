@@ -52,10 +52,46 @@
       <% if (topic.top) { %>
         <span class='put_top'>置顶</span>
       <% } %>
+        [<%=topic.topic_type%>]
         <%= topic.title %>
       </h3>
       <hr>
+
+  
       <div class='topic_content'>
+     
+    已有<span class='h16'>7</span>人报名，已经互相发送了
+   <span class='h16'>9</span>张，本活动到<span class='h16'>2013-12-11</span>结束。
+       <br>
+           ★此活动设置了参加人数限制，共有
+       <span style="color: Red; margin: 5px">15</span>张片，还剩
+       <span style="color: Green;margin: 5px;">8</span>张
+       <br>
+           <% if (topic.send_type.length > 0) { %>
+          <span id="d"><strong>提供明信片品种：</strong> 
+            <span class="h14">
+                                      <%= topic.send_type %>
+            </span>
+            <br>
+            <br>
+          </span>
+         <% } %>
+          <% if (topic.request_type.length>0){%>
+
+         <span id="n"><strong>想要明信片品种：</strong> 
+         <span class="h14">
+                <%= topic.request_type %>
+         </span>
+         
+         <br>
+         <br>          
+         </span>
+         <% } %>
+           <h3>
+               内容详情：
+           </h3>
+
+
         <%- markdown(topic.content) %>
       </div>
       <hr>
@@ -78,16 +114,42 @@
         <% } %>
       </div>
       <div class="action">
-        <a class='dark' id='share_weibo_btn'
-          href="javascript:void((function(s,d,e,r,l,p,t,z,c){var%20f='http://v.t.sina.com.cn/share/share.php?appkey=<%= config.weibo_key %>',u=z||d.location,p=['&url=',e(u),'&title=',e(t||d.title),'&source=',e(r),'&sourceUrl=',e(l),'&content=',c||'gb2312','&pic=',e(p||'')].join('');function%20a(){if(!window.open([f,p].join(''),'mb',['toolbar=0,status=0,resizable=1,width=440,height=430,left=',(s.width-440)/2,',top=',(s.height-430)/2].join('')))u.href=[f,p].join('');};if(/Firefox/.test(navigator.userAgent))setTimeout(a,0);else%20a();})(screen,document,encodeURIComponent,'','','','分享来自<%= config.name %>的话题：<%= topic.title %>','',''));"
-          >分享到 weibo</a>
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style_24x24">
+	<a class="jiathis_button_douban"></a>
+	<a class="jiathis_button_tsina"></a>
+	<a class="jiathis_button_tqq"></a>
+	<a class="jiathis_button_weixin"></a>
+	<a class="jiathis_button_renren"></a>
+	<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1360012697592706" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+
         <% if (locals.current_user) { %>
           <% if (!topic.in_collection) { %>
           <button class='btn btn-success' id='collect_btn' action='collect'>加入收藏</button>
           <% } else { %>
           <button class='btn' id='collect_btn' action='de_collect'>取消收藏</button>
           <% } %>
+
         <% } %>
+
+
+
+        <% if (locals.current_user&&(locals.topic_type=='交换'||locals.topic_type=='发片'||locals.topic_type=='求片')) { %>
+        <% if (!topic.in_activity) { %>
+          <button class='btn btn-success' id='attend_btn' action='attend'>加入活动</button>
+          <% } else { %>
+          <button class='btn' id='attend_btn' action='de_attend'>退出活动</button>
+          <% } %>
+
+        <% } %>
+
+
+
         <% if (locals.current_user) { %>
           <% if (current_user.is_admin) { %>
           <% if (topic.top) { %>
@@ -207,6 +269,27 @@
           } else {
             $me.html('加入收藏');
             $me.attr('action','collect');
+          }
+          $me.toggleClass('btn-success'); 
+        } 
+      }, 'json'); 
+    });
+
+  $('#attend_btn').click(function(){
+      var $me = $(this);
+      var action = $me.attr('action');
+      var data = {
+        topic_id: '<%= topic._id %>',
+        _csrf: '<%= csrf %>'
+      };
+      $.post('/topic/' + action, data, function(data) {
+        if (data.status === 'success') {
+          if (action == 'attend') {
+            $me.html('退出活动');
+            $me.attr('action','de_attend');
+          } else {
+            $me.html('加入活动');
+            $me.attr('action','attend');
           }
           $me.toggleClass('btn-success'); 
         } 

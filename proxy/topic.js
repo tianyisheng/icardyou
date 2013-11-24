@@ -211,10 +211,16 @@ exports.reduceCount = function (id, callback) {
   });
 };
 
-exports.newAndSave = function (title, content, authorId, callback) {
+exports.newAndSave = function (title, topic_type,send_type,request_type,number_limit,pic_url,content, authorId, callback) {
   var topic = new Topic();
   topic.title = title;
   topic.content = content;
   topic.author_id = authorId;
+  topic.topic_type = topic_type,
+  topic.send_type = send_type,
+  topic.request_type = request_type,
+  topic.number_limit=number_limit,
+  topic.number_attendent=0,
+  topic.pic_url = pic_url,
   topic.save(callback);
 };

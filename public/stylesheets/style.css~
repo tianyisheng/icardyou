@@ -148,7 +148,7 @@ a.light:hover {
   line-height: 48px;
 }
 .cell .block.count {
-  width: 70px;
+  width: 100px;
   margin: 0px 8px;
 }
 .cell.message, .cell[message_id] {
@@ -758,4 +758,20 @@ textarea.editor {
 .reply_content table tr th>:last-child,
 .reply_content table tr td>:last-child {
   margin-bottom:0;
+}
+
+.radio-toolbar input[type="radio"] {
+    display:none; 
+}
+
+.radio-toolbar label {
+    display:inline-block;
+    background-color:#ddd;
+    padding:4px 11px;
+    font-family:Arial;
+    font-size:16px;
+}
+
+.radio-toolbar input[type="radio"]:checked + label { 
+    background-color:#bbb;
 }

@@ -68,13 +68,13 @@
       </div>
       <% }else{ %>
       <% if (locals.action && action === 'edit') { %>
-      <form id='create_topic_form' action='/topic/<%= topic_id %>/edit' method='post'>
+      <form id='create_topic_form' action='/topic/<%= topic_id %>/edit' method='post' enctype="multipart/form-data">
       <% } else { %>
-      <form id='create_topic_form' action='/topic/create' method='post'>
+      <form id='create_topic_form' action='/topic/create' method='post' enctype="multipart/form-data">
       <% } %>
         <fieldset>
           <label class='bold' for='title'>标题</label>
-          <textarea class='span9' id='title' name='title' rows='1' placeholder="请在此输入标题，字数控制在10到100个之间"><%= locals.title || '' %></textarea>
+          <textarea class='span9' id='title' name='title' rows='1' placeholder="请在此输入标题，字数控制在3到100个之间"><%= locals.title || '' %></textarea>
         </fieldset>
 
 <script>
@@ -84,23 +84,38 @@ function toggle(num)
  if (num=='send')
     {
   document.getElementById("needDiv").style.display="none";
-    document.getElementById("dedicationDiv").style.display="compact";
+    document.getElementById("dedicationDiv").style.display="block";
  document.getElementById("images").style.display="block";
- document.getElementById("maxnumber").style.display="compact";
+ document.getElementById("maxnumber").style.display="block";
+document.getElementById('type_0').checked = true;
+document.getElementById('type_1').checked = false;
+document.getElementById('type_2').checked = false;
+document.getElementById('type_3').checked = false;
+document.getElementById('type_4').checked = false;
     }
     else if(num=='req')
   {
-   document.getElementById("needDiv").style.display="compact";
+   document.getElementById("needDiv").style.display="block";
    document.getElementById("dedicationDiv").style.display="none";
    document.getElementById("images").style.display="none";
- document.getElementById("maxnumber").style.display="compact";
+ document.getElementById("maxnumber").style.display="block";
+document.getElementById('type_0').checked = false;
+document.getElementById('type_1').checked = true;
+document.getElementById('type_2').checked = false;
+document.getElementById('type_3').checked = false;
+document.getElementById('type_4').checked = false;
   }
    else if( num== 'exc')     
    {
-   document.getElementById("needDiv").style.display="compact";
-    document.getElementById("dedicationDiv").style.display="compact";
-    document.getElementById("images").style.display="compact";
-   document.getElementById("maxnumber").style.display="compact";
+   document.getElementById("needDiv").style.display="block";
+    document.getElementById("dedicationDiv").style.display="block";
+    document.getElementById("images").style.display="block";
+   document.getElementById("maxnumber").style.display="block";
+document.getElementById('type_0').checked = false;
+document.getElementById('type_1').checked = false;
+document.getElementById('type_2').checked = true;
+document.getElementById('type_3').checked = false;
+document.getElementById('type_4').checked = false;
     }
   else if( num=='topic')  
     { 
@@ -108,91 +123,87 @@ function toggle(num)
      document.getElementById("dedicationDiv").style.display="none";
      document.getElementById("maxnumber").style.display="none";
      document.getElementById("images").style.display="none";
+document.getElementById('type_0').checked = false;
+document.getElementById('type_1').checked = false;
+document.getElementById('type_2').checked = false;
+document.getElementById('type_3').checked = true;
+document.getElementById('type_4').checked = false;
 
     }
   else if( num=='share')  
     {
     document.getElementById("needDiv").style.display="none";
      document.getElementById("dedicationDiv").style.display="none";
-  document.getElementById("images").style.display="compact";
+  document.getElementById("images").style.display="block";
  document.getElementById("maxnumber").style.display="none";
+document.getElementById('type_0').checked = false;
+document.getElementById('type_1').checked = false;
+document.getElementById('type_2').checked = false;
+document.getElementById('type_3').checked = false;
+document.getElementById('type_4').checked = true;
    } 
 }
 
-function mOut(obj)
-{
-obj.innerHTML="Mouse Over Me"
-}
+document.getElementById('type_4').checked = true;
 </script>
+ 
         <fieldset>
         <div id="content">
                 <div style="font-weight: bold;">
                                 活动类型
                 </div>
            <div class="radio-toolbar">
-	       <tr>
-		<td>
-		<input id="type_0" type="radio" name="type" value="1" onclick="toggle('send');"/><label for="type_0">发明信片</label>
-                </td>	
-		<td>
-		<input id="type_1" type="radio" name="type" value="2" onclick="toggle('req');"/><label for="type_1">求明信片</label>
-		</td>		
-		<td>
-		<input id="type_2" type="radio" name="type" value="3" onclick="toggle('exc');" checked /><label for="type_2">交换明信片</label>
-		</td>
-		<td>
-		<input id="type_3" type="radio" name="type" value="4" onclick="toggle('topic');" /><label for="type_3">话题</label>
-		</td>
-		<td>
-		<input id="type_4" type="radio" name="type" value="5" onclick="toggle('share');" /><label for="type_4">晒片</label>
-		</td>
-	      </tr>
+	       
+		<input id="type_0" type="radio" name="send" value="on" <% if (!locals.topic_type||locals.topic_type=="发片"){%> checked <%}%> onclick="toggle('send');"/><label for="type_0">发明信片</label>
+                
+
+		<input id="type_1" type="radio" name="req" value="on" <% if (locals.topic_type=="求片"){%> checked <%}%> onclick="toggle('req');"/><label for="type_1">求明信片</label>
+		
+		<input id="type_2" type="radio" name="exc" value="on" <% if (locals.topic_type=="交换"){%> checked <%}%> onclick="toggle('exc');" /><label for="type_2">交换明信片</label>
+		
+		<input id="type_3" type="radio" name="topic" value="on" <% if (locals.topic_type=="话题"){%> checked <%}%>  onclick="toggle('topic');" /><label for="type_3">话题</label>
+
+		<input id="type_4" type="radio" name="share" value="on" <% if (locals.topic_type=="晒片"){%> checked <%}%> onclick="toggle('share');" /><label for="type_4">晒片</label>
              </div>              
-             <table id="wish" border=0>
-                 <tr>            
-                  <td>
-                        <div id="dedicationDiv">
+                 
+                       
+                        <div id="dedicationDiv" <% if (locals.topic_type=="话题"||locals.topic_type=="求片"||locals.topic_type=="晒片"){%> style="display:none" <%}%> >
                             
                             <div style="font-weight: bold;">
                                 我会寄出什么明信片
                             </div>
-                            <input name="dedication" type="text" id="dedication" class='span9'" />
+                            <textarea name="send_type" id="title" class='span9' rows='1' ><%= locals.send_type || '' %></textarea>
                         </div>
-                        <div id="needDiv">
+ 
+                       
+                        <div id="needDiv" <% if (!locals.topic_type||locals.topic_type=="发片"||locals.topic_type=="话题"||locals.topic_type=="晒片"){%> style="display:none" <%}%> >
                             <div style="font-weight: bold;">
                                 我想要什么类型的明信片
                             </div>
-                            <input name="need" type="text" id="need" class='span9'" />
+                            <textarea class='span9' id='title' name="request_type" rows='1'><%= locals.request_type || '' %></textarea>
                         </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <div id="images">
+                          
+                        <div id="images"<% if (locals.topic_type=="求片"||locals.topic_type=="话题"){%> style="display:none" <%}%> >
                      
                             <div id="uploadDiv" style="margin-top: 5px;">
                                 <div style="font-weight: bold;">
                                     我要上传图片 <span><input name="photocount" type="text" id="photocount" class="textbox" style="width: 20px;" />  张</span>
                                 </div>
-                                正面：<input type="file" name="FileUpload1" id="FileUpload1" /><br />
-                                背面：<input type="file" name="FileUpload2" id="FileUpload2" /><br />
-                                邮戳：<input type="file" name="FileUpload3" id="FileUpload3" /><br />
+                                正面：<input type="file" name="FileUpload1" id="FileUpload1" multiple="multiple"/><br />
+                                背面：<input type="file" name="FileUpload2" id="FileUpload2" multiple="multiple" /><br />
+                                邮戳：<input type="file" name="FileUpload3" id="FileUpload3" multiple="multiple"/><br />
                             </div>
                         </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <div id="maxnumber">
+                    
+                      
+                        <div id="maxnumber"<% if (locals.topic_type=="晒片"||locals.topic_type=="话题"){%> style="display:none" <%}%> >
                             <div style="font-weight: bold;">
                                 提供/需要的明信片数量
                             </div>
-                            <input name="number" type="text" id="number" class="textbox" style="width: 50px;" /><font
+                            <input name="number_limit" type="text" id="number" class="textbox" style="width: 50px;" value=<%= locals.number_limit || '' %> ""/><font
                                 color='red'>（新增功能）</font> 如不想限制参加人数，请勿填任何内容。
                         </div>
-                    </td>
-                </tr>                   
-        </table>
+                                           
     </div>
 
       </fieldset>
@@ -210,7 +221,10 @@ obj.innerHTML="Mouse Over Me"
         </fieldset>
       </form>
     </div>
+
+
     <% } %>
+
   </div>  
 </div>
 
@@ -225,6 +239,7 @@ obj.innerHTML="Mouse Over Me"
 
 <script>
 $(function () {
+   
   $('.tag_selectable').click(function(){
     $(this).toggleClass('tag_select');
   });

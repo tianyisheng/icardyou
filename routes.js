@@ -79,7 +79,8 @@ module.exports = function (app) {
 
   // topic
   // 新建文章界面
-  app.get('/topic/create', auth.signinRequired, topic.create);
+  app.get('/topic/create', auth.signinRequired, topic.create);//create topic
+  app.get('/topic/create2', auth.signinRequired, topic.create2); // create a pure topic
   app.get('/topic/:tid', topic.index);
   app.get('/topic/:tid/top/:is_top?', topic.top);
   app.get('/topic/:tid/edit', topic.showEdit);

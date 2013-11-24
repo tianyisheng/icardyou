@@ -47,7 +47,10 @@ app.configure(function () {
   app.set('views', path.join(__dirname, 'views'));
   app.register('.html', require('ejs'));
   app.use(express.bodyParser({
-    uploadDir: config.upload_dir
+    uploadDir: config.upload_dir,
+    keepExtensions: true,
+    limit: 10000000, // 30M limit
+    defer: true  //enable event 
   }));
   app.use(express.cookieParser());
   app.use(express.session({

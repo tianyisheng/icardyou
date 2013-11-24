@@ -15,10 +15,14 @@ var Tag = require('../proxy').Tag;
 var Relation = require('../proxy').Relation;
 var TopicTag = require('../proxy').TopicTag;
 var TopicCollect = require('../proxy').TopicCollect;
+var TopicAttend = require('../proxy').TopicAttend;
 
 var EventProxy = require('eventproxy');
 var Util = require('../libs/util');
-
+var fs = require('fs');
+var path = require('path');
+var ndir = require('ndir');
+var config = require('../config').config;
 /**
  * Topic page
  *
@@ -39,7 +43,8 @@ exports.index = function (req, res, next) {
       topic: topic,
       author_other_topics: other_topics,
       no_reply_topics: no_reply_topics,
-      relation : relation
+      relation : relation,
+      topic_type:topic.topic_type
     });
   });
 
@@ -77,6 +82,10 @@ exports.index = function (req, res, next) {
         TopicCollect.getTopicCollect(req.session.user._id, topic._id, ep.done(function (doc) {
           topic.in_collection = doc;
           ep.emit('topic', topic);
+            }));
+        TopicAttend.getTopicAttend(req.session.user._id, topic._id, ep.done(function (doc) {
+          topic.in_activity = doc;
+          ep.emit('topic', topic);
         }));
       }
     }));
@@ -99,21 +108,58 @@ exports.index = function (req, res, next) {
   }));
 };
 
+//对应的是get方法
 exports.create = function (req, res, next) {
   Tag.getAllTags(function (err, tags) {
     if (err) {
       return next(err);
     }
-    res.render('topic/edit', {tags: tags});
+    res.render('topic/edit', {tags: tags,topic_type:'发片'});
+  });
+};
+
+//对应的是get方法
+exports.create2 = function (req, res, next) {
+  console.log('create2');
+  Tag.getAllTags(function (err, tags) {
+    if (err) {
+      return next(err);
+    }
+    res.render('topic/edit', {tags: tags, topic_type:'话题'});
   });
 };
 
 
-exports.put = function (req, res, next) {
+//app的post  topic/create
+exports.put = function (req, res, next) {    
+
   var title = sanitize(req.body.title).trim();
   title = sanitize(title).xss();
   var content = req.body.t_content;
   var topic_tags = [];
+  var topic_type;
+  if(req.body.send=='on')
+       topic_type='发片';
+  else
+      if( req.body.req=='on')
+       topic_type='求片';
+  else
+      if( req.body.exc=='on')
+       topic_type='交换';
+  else
+      if(req.body.topic=='on')
+       topic_type='话题';
+  else
+      if(req.body.share=='on')
+       topic_type='晒片';
+  console.log(topic_type);
+  var send_type=req.body.send_type;
+  var request_type=req.body.request_type;
+  var number_limit=req.body.number_limit;
+   console.log(send_type);
+   console.log(request_type);
+   console.log(number_limit);
+  var pic_url=[];
   if (req.body.topic_tags !== '') {
     topic_tags = req.body.topic_tags.split(',');
   }
@@ -130,9 +176,9 @@ exports.put = function (req, res, next) {
           }
         }
       }
-      res.render('topic/edit', {tags: tags, edit_error: '标题不能是空的。', content: content});
+      res.render('topic/edit', {tags: tags, edit_error: '标题不能是空的。', content: content,topic_type:topic_type,send_type:send_type,request_type:request_type,number_limit:number_limit});
     });
-  } else if (title.length < 10 || title.length > 100) {
+  } else if (title.length < 3 || title.length > 100) {
     Tag.getAllTags(function (err, tags) {
       if (err) {
         return next(err);
@@ -144,10 +190,41 @@ exports.put = function (req, res, next) {
           }
         }
       }
-      res.render('topic/edit', {tags: tags, edit_error: '标题字数太多或太少', title: title, content: content});
+      res.render('topic/edit', {tags: tags, edit_error: '标题字数太多或太少', title: title, content: content,topic_type:topic_type,send_type:send_type,request_type:request_type,number_limit:number_limit});
     });
   } else {
-    Topic.newAndSave(title, content, req.session.user._id, function (err, topic) {
+    
+   for (var i in req.files) {
+     if (req.files[i].size == 0||req.files[i].size>=307200000){
+      // 删除一个文件
+      fs.unlink(req.files[i].path,function (err) {
+         if (err) console.log("fail to unlink");
+       });
+      } 
+      else {
+     //console.log('begin to process!'); 
+        var file=req.files[i];
+        var uid = req.session.user._id.toString();
+        var userDir = path.join(config.upload_dir, uid);
+        ndir.mkdir(userDir, function (err) {
+             if (err) {
+                   return console.log("error in mkdir");
+                }
+              var filename = Date.now() + '_' + file.name;
+              var savepath = path.resolve(path.join(userDir, filename));
+              if (savepath.indexOf(path.resolve(userDir)) !== 0) {
+                     return console.log('forbidden');
+                   }
+              fs.rename(file.path, savepath, function (err) {
+              if (err) {
+                    return console.log(err);
+               }
+               pic_url.push('/user_data/images/' + uid + '/' + encodeURIComponent(filename));
+               });
+         }); 
+     }
+    }
+    Topic.newAndSave(title, topic_type,send_type,request_type, number_limit,pic_url, content, req.session.user._id, function (err, topic) {
       if (err) {
         return next(err);
       }
@@ -185,7 +262,7 @@ exports.put = function (req, res, next) {
 
       //发送at消息
       at.sendMessageToMentionUsers(content, topic._id, req.session.user._id);
-    });
+});
   }
 };
 
@@ -226,6 +303,7 @@ exports.showEdit = function (req, res, next) {
   });
 };
 
+//app的post  topic/edit
 exports.update = function (req, res, next) {
   if (!req.session.user) {
     res.redirect('home');
@@ -264,7 +342,7 @@ exports.update = function (req, res, next) {
               }
             }
           }
-          res.render('topic/edit', {action: 'edit', edit_error: '标题不能是空的。', topic_id: topic._id, content: content, tags: all_tags});
+          res.render('topic/edit', {action: 'edit', edit_error: '标题不能是空的。', topic_id: topic._id, content: content, tags: all_tags,topic_type:topic_type,send_type:send_type,request_type:request_type,number_limit:number_limit});
         });
       } else {
         //保存话题
@@ -272,6 +350,27 @@ exports.update = function (req, res, next) {
         //保存新topic_tag
         topic.title = title;
         topic.content = content;
+        
+        var topic_type;
+        if(req.body.send=='on')
+           topic_type='发片';
+        else
+           if( req.body.req=='on')
+             topic_type='求片';
+        else
+          if( req.body.exc=='on')
+             topic_type='交换';
+        else
+            if(req.body.topic=='on')
+             topic_type='话题';
+         else
+           if(req.body.share=='on')
+              topic_type='晒片';
+ 
+       topic.send_type=req.body.send_type;
+       topic.request_type=req.body.request_type;
+       topic.number_limit=req.body.number_limit;
+
         topic.update_at = new Date();
         topic.save(function (err) {
           if (err) {
@@ -432,6 +531,48 @@ exports.collect = function (req, res, next) {
   });
 };
 
+
+exports.attend = function (req, res, next) {
+  console.log('attend');
+  var topic_id = req.body.topic_id;
+  Topic.getTopic(topic_id, function (err, topic) {
+    if (err) {
+      return next(err);
+    }
+    if (!topic) {
+      res.json({status: 'failed'});
+    }
+
+    TopicAttend.getTopicAttend(req.session.user._id, topic._id, function (err, doc) {
+      if (err) {
+        return next(err);
+      }
+      if (doc) {
+        res.json({status: 'success'});
+        return;
+      }
+
+      TopicAttend.newAndSave(req.session.user._id, topic._id, function (err) {
+        if (err) {
+          return next(err);
+        }
+        res.json({status: 'success'});
+      });
+      User.getUserById(req.session.user._id, function (err, user) {
+        if (err) {
+          return next(err);
+        }
+        user.attend_topic_count += 1;
+        user.save();
+      });
+
+      req.session.user.attend_topic_count += 1;
+      topic.attend_count += 1;
+      topic.save();
+    });
+  });
+};
+
 exports.de_collect = function (req, res, next) {
   var topic_id = req.body.topic_id;
   Topic.getTopic(topic_id, function (err, topic) {
@@ -462,3 +603,37 @@ exports.de_collect = function (req, res, next) {
     req.session.user.collect_topic_count -= 1;
   });
 };
+
+
+exports.de_attend = function (req, res, next) {
+  console.log('de_attend');
+  var topic_id = req.body.topic_id;
+  Topic.getTopic(topic_id, function (err, topic) {
+    if (err) {
+      return next(err);
+    }
+    if (!topic) {
+      res.json({status: 'failed'});
+    }
+    TopicAttend.remove(req.session.user._id, topic._id, function (err) {
+      if (err) {
+        return next(err);
+      }
+      res.json({status: 'success'});
+    });
+
+    User.getUserById(req.session.user._id, function (err, user) {
+      if (err) {
+        return next(err);
+      }
+      user.attend_topic_count -= 1;
+      user.save();
+    });
+
+    topic.attend_count -= 1;
+    topic.save();
+
+    req.session.user.attend_topic_count -= 1;
+  });
+};
+

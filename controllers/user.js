@@ -114,14 +114,36 @@ exports.setting = function (req, res, next) {
     var url = sanitize(req.body.url).trim();
     url = sanitize(url).xss();
     var profile_image_url = sanitize(sanitize(req.body.profile_image_url).trim()).xss();
-    var location = sanitize(req.body.location).trim();
-    location = sanitize(location).xss();
+    // i card you
+    var country = sanitize(req.body.country).trim();
+    country = sanitize(country).xss();
+    var region =sanitize(req.body.region).trim();
+    region =  sanitize(region).xss();
+   
+    var zip =sanitize(req.body.zip).trim();
+    zip =  sanitize(zip).xss();
+
+    var post_address =sanitize(req.body.post_address).trim();
+    post_address =  sanitize(post_address).xss();
+
+    var post_name =sanitize(req.body.post_name).trim();
+    post_name =  sanitize(post_name).xss();
+    if(!post_name)
+     {post_name='';}
+    if(!post_address)
+     {post_address='';}
+    if(!zip)
+     {zip='';}
+
+
     var signature = sanitize(req.body.signature).trim();
     signature = sanitize(signature).xss();
     var profile = sanitize(req.body.profile).trim();
     profile = sanitize(profile).xss();
     var weibo = sanitize(req.body.weibo).trim();
     weibo = sanitize(weibo).xss();
+    var gender = sanitize(req.body.gender).trim();
+    gender=sanitize(gender).xss();
     var renren = sanitize(req.body.renren).trim();
     renren = sanitize(renren).xss();
     var receive_at_mail = req.body.receive_at_mail === 'on';
@@ -140,10 +162,15 @@ exports.setting = function (req, res, next) {
           email: email,
           url: url,
           profile_image_url: profile_image_url,
-          location: location,
+          post_address:post_address,
+          post_name:post_name,
+          zip:zip,
+          country:country,
+          region:region,
           signature: signature,
           profile: profile,
           weibo: weibo,
+          gender:gender,
           renren:renren,
           receive_at_mail: receive_at_mail,
           receive_reply_mail: receive_reply_mail
@@ -164,11 +191,16 @@ exports.setting = function (req, res, next) {
           email: email,
           url: url,
           profile_image_url: profile_image_url,
-          location: location,
+          post_address:post_address,
+          post_name:post_name,
+          zip:zip,
+          country:country,
+          region:region,
           signature: signature,
           profile: profile,
           weibo: weibo,
           renren:renren,
+          gender:gender,
           receive_at_mail: receive_at_mail,
           receive_reply_mail: receive_reply_mail
         });
@@ -189,10 +221,97 @@ exports.setting = function (req, res, next) {
           email: email,
           url: url,
           profile_image_url: profile_image_url,
-          location: location,
+          post_address:post_address,
+          post_name:post_name,
+          zip:zip,
+          country:country,
+          region:region,
           signature: signature,
           profile: profile,
           weibo: weibo,
+          gender:gender,
+          renren:renren,
+          receive_at_mail: receive_at_mail,
+          receive_reply_mail: receive_reply_mail
+        });
+        return;
+      }
+    }
+
+    if (zip) {
+      try {
+        check(zip, '邮编应该是5-6位数字').len(5,6).isInt();
+      } catch (e) {
+        res.render('user/setting', {
+          error: e.message,
+          name: name,
+          email: email,
+          url: url,
+          profile_image_url: profile_image_url,
+          post_address:post_address,
+          post_name:post_name,
+          zip:zip,
+          country:country,
+          region:region,
+          signature: signature,
+          profile: profile,
+          weibo: weibo,
+          gender:gender,
+          renren:renren,
+          receive_at_mail: receive_at_mail,
+          receive_reply_mail: receive_reply_mail
+        });
+        return;
+      }
+    }
+
+
+    if (post_name) {
+      try {
+        check(post_name, '名字过短或者过长').len(2,15);
+      } catch (e) {
+        res.render('user/setting', {
+          error: e.message,
+          name: name,
+          email: email,
+          url: url,
+          profile_image_url: profile_image_url,
+          post_address:post_address,
+          post_name:post_name,
+          zip:zip,
+          country:country,
+          region:region,
+          signature: signature,
+          profile: profile,
+          weibo: weibo,
+          gender:gender,
+          renren:renren,
+          receive_at_mail: receive_at_mail,
+          receive_reply_mail: receive_reply_mail
+        });
+        return;
+      }
+    }
+
+    if (post_address) {
+      try {
+        check(post_address, '地址长度过长或过短').len(6, 50);
+      } catch (e) {
+        res.render('user/setting', {
+          error: e.message,
+          name: name,
+          email: email,
+          url: url,
+          profile_image_url: profile_image_url,
+          post_address:post_address,
+          post_name:post_name,
+          zip:zip,
+          country:country,
+          region:region,
+          signature: signature,
+          profile: profile,
+          weibo: weibo,
+          gender:gender,
           renren:renren,
           receive_at_mail: receive_at_mail,
           receive_reply_mail: receive_reply_mail
@@ -207,11 +326,16 @@ exports.setting = function (req, res, next) {
       }
       user.url = url;
       user.profile_image_url = profile_image_url;
-      user.location = location;
+          user.post_address = post_address,
+          user.post_name = post_name,
+          user.zip = zip,
+          user.country = country,
+          user.region =region,
       user.signature = signature;
       user.profile = profile;
       user.weibo = weibo;
       user.renren= renren;
+      user.gender= gender;
       user.receive_at_mail = receive_at_mail;
       user.receive_reply_mail = receive_reply_mail;
       user.save(function (err) {
@@ -243,10 +367,15 @@ exports.setting = function (req, res, next) {
           email: user.email,
           url: user.url,
           profile_image_url: user.profile_image_url,
-          location: user.location,
+          post_address: user.post_address,
+          post_name: user.post_name,
+          zip : user.zip,
+          country : user.country,
+          region : user.region,
           signature: user.signature,
           profile: user.profile,
           weibo: user.weibo,
+          gender:user.gender,
           renren:user.renren,
           receive_at_mail: user.receive_at_mail,
           receive_reply_mail: user.receive_reply_mail
@@ -269,11 +398,16 @@ exports.setting = function (req, res, next) {
           email: user.email,
           url: user.url,
           profile_image_url: user.profile_image_url,
-          location: user.location,
+          post_address : user.post_address,
+          post_name : user.post_name,
+          zip : user.zip,
+          country : user.country,
+          region : user.region,
           signature: user.signature,
           profile: user.profile,
           weibo: user.weibo,
-          renren:user.renren,
+          gender: user.gender,
+          renren: user.renren,
           receive_at_mail: user.receive_at_mail,
           receive_reply_mail: user.receive_reply_mail
         });

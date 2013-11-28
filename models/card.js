@@ -1,20 +1,27 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var ObjectId = Schema.ObjectId;
-  
+
 /*
- * type:
- * 发送中: xx 回复了你的话题
- * 已收到: xx 在话题中回复了你
+ * type: 活动片，配对片
+ * status: 已发，准备发，收到，回寄
  */
  
-var MessageSchema = new Schema({
+var CardSchema = new Schema({
+  id:{type: Number, index: true },
   status: { type: String },
   sender_id: { type: ObjectId, index: true },
+  image_url: [String],
   reciver_id: { type: ObjectId, index: true},
-  url:{type:},
+  feedback: {type: String},
   status: { type: Boolean, default: false },
-  create_at: { type: Date, default: Date.now }
+  post_mark_time :{type: String},
+  post_mark_address:{type:String},
+  create_at: { type: Date, default: Date.now },
+  /**回寄给**/
+  reply_to:{},
+  /**活动片,配对片**/
+  type:{type: String }
 });
 
-mongoose.model('Message', MessageSchema);
+mongoose.model('Card', CardSchema);

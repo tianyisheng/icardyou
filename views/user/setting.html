@@ -33,12 +33,100 @@
 						<input class='input-xlarge readonly' id='email' name='email' size='30' type='text' readonly='true' value="<%= email %>" />
 					</div>
 				</div>
+                           <div class='control-group'>
+					<label class='control-label' for='gender'>性别</label>
+					<div class='controls'>
+						<select class="selectpicker data-size=3" id='gender' name='gender' value="<%= locals.gender ||''%>">
+                                                 <option value="男"> 男</option>
+                                                 <option value="女"> 女</option>
+                                                 <option value="保密"> 保密</option>
+	                                         </select>
+				        </div>
+				</div>
+                           <div class='control-group'>
+					<label class='control-label' for='country'>国家</label>
+					<div class='controls'>
+						<select class="selectpicker data-size=2" id='country' name='country' value="<%= locals.country ||''%>">
+                                                 <option> 中国</option>
+                                                 <option> 海外</option>
+	                                         </select>
+                                        </div>
+				</div>
+                            <div class='control-group'>   
+                                      <label class='control-label' for='reigion'>省份</label>
+                                        <div class='controls'>   
+                                      
+						<select class="selectpicker data-size=35" id='region' name='region' value="<%= locals.region ||''%>">
+                                      
+                                      <option value="北京">北京</option>
+	<option value="2">天津</option>
+	<option value="3">上海</option>
+	<option value="4">广东</option>
+	<option value="5">广西</option>
+	<option value="6">河北</option>
+	<option value="7">河南</option>
+	<option value="8">湖北</option>
+	<option value="9">湖南</option>
+	<option value="10">福建</option>
+	<option value="11">山东</option>
+	<option value="12">安徽</option>
+	<option value="13">浙江</option>
+	<option value="14">四川</option>
+	<option value="15">重庆</option>
+	<option value="16">贵州</option>
+	<option value="17">云南</option>
+	<option value="18">江苏</option>
+	<option value="19">山西</option>
+	<option value="20">辽宁</option>
+	<option value="21">吉林</option>
+	<option value="22">内蒙古</option>
+	<option value="23">黑龙江</option>
+	<option value="24">西藏</option>
+	<option value="25">陕西</option>
+	<option value="26">甘肃</option>
+	<option value="27">青海</option>
+	<option value="28">宁夏</option>
+	<option value="29">新疆</option>
+	<option value="30">江西</option>
+	<option value="31">海南</option>
+	<option value="32">台湾</option>
+	<option value="33">香港</option>
+	<option value="34">澳门</option>
+  <option value="35">海外</option>
+         </select>
+
+		                  </div>
+		</div>
+
+                                 <div class='control-group'>
+					<label class='control-label' for='post_name'>收件人姓名</label>
+					<div class='controls'>
+						<input class='input-xlarge' id='post_name' name='post_name' type='text' value="<%= locals.post_name || '' %>" />（*必填）
+					</div>
+	
+                                        <label class='control-label' for='zip'>收件人邮编</label>
+                                        <div class='controls'>
+						<input class='input-xlarge' id='zip' name='zip' type='text' value="<%= locals.zip || '' %>" />（*必填）
+					</div>
+
+                                           <label class='control-label' for='post_address'>详细地址</label>
+                                        <div class='controls'>
+						<input class='input-xlarge' id='post_address' name='post_address' type='text' value="<%= locals.post_address || '' %>" /> （*必填）
+					</div>
+
+
+
+				</div>
+
 				<div class='control-group'>
 					<label class='control-label' for='profile_image_url'>头像URL</label>
 					<div class='controls'>
 						<input class='input-xlarge' id='profile_image_url' name='profile_image_url' type='text' value="<%= locals.profile_image_url || '' %>" />
 					</div>
 				</div>
+
+
+
 				<div class='control-group'>
 					<label class='control-label' for='url'>豆瓣</label>
 					<div class='controls'>
@@ -49,16 +137,7 @@
 						<% } %>
 					</div>
 				</div>
-				<div class='control-group'>
-					<label class='control-label' for='location'>所在地点</label>
-					<div class='controls'>
-						<% if(locals.location){ %>
-						<input class='input-xlarge' id='location' name='location' size='30' type='text' value="<%= location %>" />
-						<% }else{ %>
-						<input class='input-xlarge' id='location' name='location' size='30' type='text' value='' />
-						<% } %>
-					</div>
-				</div>
+
 				<div class='control-group'>
 					<label class='control-label' for='signature'>个性签名</label>
 					<div class='controls'>

@@ -30,6 +30,19 @@ var UserSchema = new Schema({
   level: { type: String },
   active: { type: Boolean, default: true },
 
+/** i card you**/
+  sent_count: { type: Number, default: 0 },
+  received_count: { type: Number, default: 0 },
+  last_sent_time:{type:Number, type: Date},
+  gender: {type: String},
+  country: {type: String},
+  region: {type: String},
+  post_address: {type: String},
+  zip: {type: Number},
+  post_name: {type: String},
+
+/**end of i card you**/
+
   receive_reply_mail: {type: Boolean, default: false },
   receive_at_mail: { type: Boolean, default: false },
   from_wp: { type: Boolean },

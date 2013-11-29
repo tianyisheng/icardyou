@@ -1,0 +1,130 @@
+<%- partial('sidebar') %>
+<script type="text/javascript">
+
+function checkSubmit()
+{
+    
+    if(!document.getElementById("iagree").checked)
+    {
+      alert("同意以上条款，才能获取配对地址");
+        return false;
+    }
+}
+</script>
+
+<div id='content'>
+  <div class='panel'>
+    <div class='header'>
+      <ul class='breadcrumb'>
+        <li><a href='/'>主页</a><span class='divider'>/</span></li>
+        <li class='active'>收到明信片</li>
+      </ul>
+    </div>
+
+
+                     <% if(locals.error){ %>
+			<div class="alert alert-error">	
+				<a class="close" data-dismiss="alert" href="#">&times;</a>
+				<strong><%= error %></strong>
+			</div>
+			<% } %>
+
+
+
+    <div class='inner topic'>
+      <hr />
+
+    <form name="ctl00" method="post" onsubmit="return checkSubmit();" action="/receivedPost" id="ctl00">
+            <div id="content">
+                <table width="80%" border="0" align="center" cellpadding="0" cellspacing="5">
+                    <tr>
+                        <td>
+                           <h3> Hello，<%=locals.nickname%><span id="welcome"> ，恭喜你收到明信片</h1>
+                            <div class="h12i">
+                                您已经收到( <span class="h16"><%=locals.sent %></span> )张，还有( <span class="h16"><%=locals.sent %></span> )张在路上，另外，您发送了( <span class="h16"><%=locals.sent %></span> )张明信片</div>
+                    </tr>
+                    </td>
+                    <tr>
+                        <td>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <h4>
+                                >> 收到明信片，按照下面步骤确认</h4>
+                            <p>
+                                1.如果你收到明信片，请查看明信片上面的ID号<br />
+                                2.在下面选框填入明信片ID和对发件人说的话，确认即可<br />
+                                3.为何要尽快确认?[<a href="/about/Default.aspx#receivepostcard" target="_blank">?</a>]<br>
+                                4.收到的明信片没有ID号<a href="/SubmitPostcardInfo/">点这里，也可以登记</a>。<br>如果你知道谁给你寄的，你可以发站内信或者邮件询问对方ID号。
+                                <br />
+                                <br />
+                                <b>明信片 ID: </b>
+                                <select name="countrycode" id="countrycode">
+	<option value="AF">AF</option>
+	<option value="AH">AH</option>
+	<option value="AN">AN</option>
+	<option value="AS">AS</option>
+	<option value="BJ">BJ</option>
+	<option value="CQ">CQ</option>
+	<option value="EU">EU</option>
+	<option value="FJ">FJ</option>
+	<option value="GD">GD</option>
+	<option value="GS">GS</option>
+	<option value="GX">GX</option>
+	<option value="GZ">GZ</option>
+	<option value="HB">HB</option>
+	<option value="HEN">HEN</option>
+	<option value="HK">HK</option>
+	<option value="HLJ">HLJ</option>
+	<option value="HN">HN</option>
+	<option value="HUB">HUB</option>
+	<option value="HUN">HUN</option>
+	<option value="JL">JL</option>
+	<option value="JS">JS</option>
+	<option value="JX">JX</option>
+	<option value="LN">LN</option>
+	<option value="MC">MC</option>
+	<option value="NA">NA</option>
+	<option value="NMG">NMG</option>
+	<option value="NX">NX</option>
+	<option value="OC">OC</option>
+	<option value="QH">QH</option>
+	<option value="SA">SA</option>
+	<option value="SC">SC</option>
+	<option value="SD">SD</option>
+	<option value="SH">SH</option>
+	<option value="SHX">SHX</option>
+	<option value="SX">SX</option>
+	<option value="TJ">TJ</option>
+	<option value="TW">TW</option>
+	<option value="XJ">XJ</option>
+	<option value="XZ">XZ</option>
+	<option value="YN">YN</option>
+	<option value="ZJ">ZJ</option>
+
+</select>
+                                <input name="postcardID" type="text" id="postcardID" style="width: 100px;" />
+                                <div id="err" style="color: Red;">
+                                </div>
+                            </p>
+                            <b>给发件人说点什么？留言会发送给发件人的站内信和邮件:</b>
+                            <textarea name="feedback" rows="2" cols="10" id="feedback" style="width: 415px;
+                                height: 100px;"></textarea>
+                            <div align="center">
+                                <input type='hidden' name='_csrf' value='<%= csrf %>' />
+                                <input type="submit" class="btn btn-success" name="receive" value="确认"/>(*确认后能看到对方的用户资料)
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+              <br/>  
+             <br/>
+       <a class="btn msg_btn" href="/user/<%=locals.name%>#received" target="_blank">查看所有收到的明信片</a>
+            <br clear="all">
+        </div>
+ </form>
+</div>
+
+

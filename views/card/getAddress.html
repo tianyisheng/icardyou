@@ -1,0 +1,95 @@
+<%- partial('sidebar') %>
+<script type="text/javascript">
+function ChangeButton()
+{
+    
+    if(document.getElementById("iagree").checked)
+    {
+        document.getElementById("sendbutton").value = "正在提交，请勿重复点击";
+    }
+}
+
+function checkSubmit()
+{
+    
+    if(!document.getElementById("iagree").checked)
+    {
+      alert("同意以上条款，才能获取配对地址");
+        return false;
+    }
+}
+</script>
+
+<div id='content'>
+  <div class='panel'>
+    <div class='header'>
+      <ul class='breadcrumb'>
+        <li><a href='/'>主页</a><span class='divider'>/</span></li>
+        <li class='active'>发送明信片</li>
+      </ul>
+    </div>
+
+
+                     <% if(locals.error){ %>
+			<div class="alert alert-error">	
+				<a class="close" data-dismiss="alert" href="#">&times;</a>
+				<strong><%= error %></strong>
+			</div>
+			<% } %>
+
+
+
+    <div class='inner topic'>
+      <hr />
+
+    <form name="ctl00" method="post" onsubmit="return checkSubmit();" action="/getAddress" id="ctl00">
+   
+ 
+
+
+      <div id="content">
+                <table width="80%" border="0" align="center" cellpadding="0" cellspacing="5">
+                    <tr>
+                        <td>
+                            <h3> Hello，<%=locals.nickname%><span id="welcome">, 欢迎来发送明信片</span></h3>
+                            <div class="h12i">
+                                您已经发送了( <span class="h16"> <%=locals.sent %></span>)张，其他用户收到了( <span class="h16"> <%=locals.sent%></span>)张，有( <span class="h16"><%=locals.send%></span>)张还未发出/收到，还可以寄( <span class="h16"><%=locals.allowed%></span>)张 (<a href="/help/Default.aspx#sendlimit" target="_blank">?</a>)
+                            </div>
+                    </tr>
+                    </td>
+                    <tr>
+                        <td>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td id="sendinfo">
+                            <h4>>> 您必须同意以下条款，才能获得发片的机会</h4>
+                            - 成功配对后必须通过邮局寄出明信片，否则会降低你的信用，甚至被删除帐号<br>
+                            - 你必须在发送的明信片中，写上系统分配的明信片的ID号。[<a href="/help/Default.aspx#postcardid" target="_blank">ID号是交换的唯一标示</a>]<br />
+                            - 当对方收到明信片后，会按照ID号来确认收到<br />
+                            - 目前你的配对上限为<%=locals.allowed%>张。[<a href="/help/Default.aspx#sendlimit" target="_blank">为何有此规定?</a>]<br />
+                            - 不得把对方的资料用于除寄出明信片外的其他用途<br />
+                            <div align="center">
+                                <br />
+                                <input id="iagree" type="checkbox" name="iagree" />
+                                我阅读并同意以上条款，并遵循<a href="/help/Default.aspx#privacy" target="_blank">隐私规定</a>
+                                <br />
+                                <input type='hidden' name='_csrf' value='<%= csrf %>' />
+                                <input type="submit" name="sendbutton" value="获取配对用户地址" onclick="ChangeButton();" class="btn btn-success" action="" />
+                            </div>
+                        </td>
+
+                    </tr>
+                </table>
+            </div>
+          <a class="btn msg_btn" href="/user/<%=locals.name%>#sent" target="_blank">查看所有已发明信片</a>
+            <br clear="all">
+        </div>
+ </form>
+</div>
+
+

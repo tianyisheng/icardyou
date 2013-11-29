@@ -1,140 +1,61 @@
 var Message = require('../proxy').Message;
 var EventProxy = require('eventproxy');
+var User = require('../proxy').User;
+var Card = require('../proxy').Card;
 
-exports.index = function (req, res, next) {
-  if (!req.session.user) {
-    res.redirect('home');
+exports.send = function (req, res, next) {
+if (!req.session || !req.session.user) {
+    res.send('forbidden!');
     return;
   }
-
-  var message_ids = [];
-  var user_id = req.session.user._id;
-  Message.getMessagesByUserId(user_id, function (err, docs) {
+  User.getUserById(req.session.user._id, function (err, user) {
     if (err) {
       return next(err);
     }
-    for (var i = 0; i < docs.length; i++) {
-      message_ids.push(docs[i]._id);
-    }
-    var messages = [];
-    if (message_ids.length === 0) {
-      res.render('message/index', {has_read_messages: [],hasnot_read_messages: []});
-      return;
-    }
-    var proxy = new EventProxy();
-    var render = function () {
-      var has_read_messages = [];
-      var hasnot_read_messages = [];
-      for (var i = 0; i < messages.length; i++) {
-        if (messages[i].is_invalid) {
-          messages[i].remove();
-        } else {
-          if (messages[i].has_read) {
-            has_read_messages.push(messages[i]);
-          } else {
-            hasnot_read_messages.push(messages[i]);
-          }
-        }
-      }
-      res.render('message/index', {has_read_messages: has_read_messages, hasnot_read_messages: hasnot_read_messages});
-      return;
-    };
-    proxy.after('message_ready', message_ids.length, render);
-    message_ids.forEach(function (id, i) {
-      Message.getMessageById(id, function (err, message) {
-        if (err) {
-          return next(err);
-        }
-        messages[i] = message;
-        proxy.emit('message_ready');
-      });
-    });
+    var sent=user.sent_count+user.send_count; 
+    if(nickname)
+        var nickname=user.name;
+    else
+        var nickname=user.nickname;
+    return res.render('card/getAddress', {name:user.name,nickname:nickname, sent: sent, received:user.sent_count, send:user.send_count, allowed: user.allowed-user.send_count});
   });
+
 };
 
 
-
-
-exports.indexSent = function (req, res, next) {
-  if (!req.session.user) {
-    res.redirect('home');
+exports.receive = function (req, res, next) {
+if (!req.session || !req.session.user) {
+    res.send('forbidden!');
     return;
   }
-
-  var has_sent_messages= [];
-  var user_id = req.session.user._id;
-  Message.getSentMessagesByUserId(user_id, function (err, docs) {
+  User.getUserById(req.session.user._id, function (err, user) {
     if (err) {
       return next(err);
     }
-    for (var i = 0; i < docs.length; i++) {
-      has_sent_messages.push(docs[i]._id);
-      }
-      res.render('message/sent', {has_sent_messages: has_sent_messages});
-      return;    
+    var sent=user.sent_count+user.send_count; 
+    if(nickname)
+        var nickname=user.name;
+    else
+        var nickname=user.nickname;
+    return res.render('card/receivedPost', {name:user.name,nickname:nickname, sent: sent, received:user.sent_count, send:user.send_count, allowed: user.allowed-user.send_count});
   });
+
 };
 
 
-
-exports.mark_read = function (req, res, next) {
+//  implement get a address by post
+exports.getAddress = function (req, res, next) {
   if (!req.session || !req.session.user) {
     res.send('forbidden!');
     return;
   }
 
   var message_id = req.body.message_id;
-  Message.getMessageById(message_id, function (err, message) {
-    if (err) {
-      return next(err);
-    }
-    if (!message) {
-      res.json({status: 'failed'});
-      return;
-    }
-    if (message.master_id.toString() !== req.session.user._id.toString()) {
-      res.json({status: 'failed'});
-      return;
-    }
-    message.has_read = true;
-    message.save(function (err) {
-      if (err) {
-        return next(err);
-      }
-      res.json({status: 'success'});
-    });
-  });
-};
-
-
-
-// TO DO: implement post a message
-exports.post = function (req, res, next) {
-  if (!req.session || !req.session.user) {
-    res.send('forbidden!');
-    return;
-  }
-
-  var message_id = req.body.message_id;
-  Message.getMessageById(message_id, function (err, message) {
-    if (err) {
-      return next(err);
-    }
-    if (!message) {
-      res.json({status: 'failed'});
-      return;
-    }
-    if (message.master_id.toString() !== req.session.user._id.toString()) {
-      res.json({status: 'failed'});
-      return;
-    }
-    message.has_read = true;
-    message.save(function (err) {
-      if (err) {
-        return next(err);
-      }
-      res.json({status: 'success'});
-    });
+  Card.createCard(req.session.user._id, function (err, user) {
+       if( err){      
+         return res.render('card/getAddress', {error: '数据库异常，稍后再试 (v.v)',name:user.name,nickname:nickname, sent: sent, received:user.sent_count, send:user.send_count, allowed: user.allowed-user.send_count});
+       }
+       res.render();   
   });
 };
 

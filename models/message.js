@@ -4,13 +4,13 @@ var ObjectId = Schema.ObjectId;
 
   
 /*
+ * master_id: the owner of the message.
  * type:
  * reply: xx 回复了你的话题
  * reply2: xx 在话题中回复了你
  * follow: xx 关注了你
  * at: xx ＠了你
  * msg: xx 短消息了你
- * attend: 参加活动提醒
  */
  
 var MessageSchema = new Schema({

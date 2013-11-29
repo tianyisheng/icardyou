@@ -76,6 +76,7 @@ exports.sendAtMessage = function (master_id, author_id, topic_id, reply_id, call
   });
 };
 
+//author_id is the follower, so the message of the master is master_id
 exports.sendFollowMessage = function (follow_id, author_id) {
   var message = new Message();
   message.type = 'follow';
@@ -83,3 +84,15 @@ exports.sendFollowMessage = function (follow_id, author_id) {
   message.author_id = author_id;
   message.save();
 };
+
+//author_id is the attendee
+exports.sendAttendMessage = function (master_id, topic_id, author_id) {
+  var message = new Message();
+  message.type = 'attend';
+  message.master_id = master_id;
+  message.author_id = author_id;
+  message.topic_id= topic_id;
+  message.save();
+};
+
+

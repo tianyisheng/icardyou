@@ -31,15 +31,26 @@ var UserSchema = new Schema({
   active: { type: Boolean, default: true },
 
 /** i card you**/
+  /**已发送且被收到数目**/
   sent_count: { type: Number, default: 0 },
+  /**已经收到的数量**/
   received_count: { type: Number, default: 0 },
+  /**即将发送的数目，最多为allowed_count**/
+  send_count:{ type: Number, default: 0 },
+
+  /**允许发送的最大数目，目前设为**/
+  allowed:{ type: Number, default: 5 },
+
   last_sent_time:{type:Number, type: Date},
+  /**地址是否审核通过**/
+  audit:{type:Boolean,default: false},
   gender: {type: String},
   country: {type: String},
   region: {type: String},
   post_address: {type: String},
   zip: {type: Number},
   post_name: {type: String},
+  nickname: {type:String},
 
 /**end of i card you**/
 

@@ -120,7 +120,6 @@ exports.create = function (req, res, next) {
 
 //对应的是get方法
 exports.create2 = function (req, res, next) {
-  console.log('create2');
   Tag.getAllTags(function (err, tags) {
     if (err) {
       return next(err);
@@ -152,10 +151,16 @@ exports.put = function (req, res, next) {
   else
       if(req.body.share=='on')
        topic_type='晒片';
-  console.log(topic_type);
-  var send_type=req.body.send_type;
-  var request_type=req.body.request_type;
-  var number_limit=req.body.number_limit;
+ 
+  var send_type=sanitize(req.body.send_type).trim();
+  send_type= sanitize(title).xss();
+
+  var request_type=sanitize(req.body.request_type).trim();
+  request_type=sanitize(request_type).xss();   
+
+  var number_limit=sanitize(req.body.number_limit).trim();
+  number_limit=sanitize(number_limit).trim();
+
    console.log(send_type);
    console.log(request_type);
    console.log(number_limit);

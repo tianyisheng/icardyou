@@ -123,18 +123,22 @@ exports.setting = function (req, res, next) {
     var zip =sanitize(req.body.zip).trim();
     zip =  sanitize(zip).xss();
 
+    var nickname =sanitize(req.body.nickname).trim();
+    nickname =  sanitize(nickname).xss();
+
     var post_address =sanitize(req.body.post_address).trim();
     post_address =  sanitize(post_address).xss();
 
     var post_name =sanitize(req.body.post_name).trim();
     post_name =  sanitize(post_name).xss();
     if(!post_name)
-     {post_name='';}
+     {post_name=' ';}
     if(!post_address)
-     {post_address='';}
+     {post_address=' ';}
     if(!zip)
-     {zip='';}
-
+     {zip=' ';}
+   
+   
 
     var signature = sanitize(req.body.signature).trim();
     signature = sanitize(signature).xss();
@@ -148,6 +152,35 @@ exports.setting = function (req, res, next) {
     renren = sanitize(renren).xss();
     var receive_at_mail = req.body.receive_at_mail === 'on';
     var receive_reply_mail = req.body.receive_reply_mail === 'on';
+
+    if (nickname) {
+      try {
+        check(nickname, '昵称为长度为2-9').len(2,18);
+      } catch (e) {
+        res.render('user/setting', {
+          error: e.message,
+          name: name,
+          email: email,
+          url: url,
+          profile_image_url: profile_image_url,
+          post_address:post_address,
+          post_name:post_name,
+          zip:zip,
+          country:country,
+          region:region,
+          nickname:nickname,
+          signature: signature,
+          profile: profile,
+          weibo: weibo,
+          gender:gender,
+          renren:renren,
+          receive_at_mail: receive_at_mail,
+          receive_reply_mail: receive_reply_mail
+        });
+        return;
+      }
+    }
+
 
     if (url !== '') {
       try {
@@ -167,6 +200,7 @@ exports.setting = function (req, res, next) {
           zip:zip,
           country:country,
           region:region,
+          nickname:nickname,
           signature: signature,
           profile: profile,
           weibo: weibo,
@@ -196,6 +230,7 @@ exports.setting = function (req, res, next) {
           zip:zip,
           country:country,
           region:region,
+         nickname:nickname,
           signature: signature,
           profile: profile,
           weibo: weibo,
@@ -226,6 +261,7 @@ exports.setting = function (req, res, next) {
           zip:zip,
           country:country,
           region:region,
+         nickname:nickname,
           signature: signature,
           profile: profile,
           weibo: weibo,
@@ -237,34 +273,6 @@ exports.setting = function (req, res, next) {
         return;
       }
     }
-
-    if (zip) {
-      try {
-        check(zip, '邮编应该是5-6位数字').len(5,6).isInt();
-      } catch (e) {
-        res.render('user/setting', {
-          error: e.message,
-          name: name,
-          email: email,
-          url: url,
-          profile_image_url: profile_image_url,
-          post_address:post_address,
-          post_name:post_name,
-          zip:zip,
-          country:country,
-          region:region,
-          signature: signature,
-          profile: profile,
-          weibo: weibo,
-          gender:gender,
-          renren:renren,
-          receive_at_mail: receive_at_mail,
-          receive_reply_mail: receive_reply_mail
-        });
-        return;
-      }
-    }
-
 
     if (post_name) {
       try {
@@ -281,6 +289,7 @@ exports.setting = function (req, res, next) {
           zip:zip,
           country:country,
           region:region,
+         nickname:nickname,
           signature: signature,
           profile: profile,
           weibo: weibo,
@@ -292,6 +301,38 @@ exports.setting = function (req, res, next) {
         return;
       }
     }
+
+    if (zip) {
+      try {
+     
+        check(zip, '邮编应该是5-6位数字').len(5,6).isInt();
+      } catch (e) {
+        res.render('user/setting', {
+          error: e.message,
+          name: name,
+          email: email,
+          url: url,
+          profile_image_url: profile_image_url,
+          post_address:post_address,
+          post_name:post_name,
+          zip:zip,
+          country:country,
+          region:region,
+         nickname:nickname,
+          signature: signature,
+          profile: profile,
+          weibo: weibo,
+          gender:gender,
+          renren:renren,
+          receive_at_mail: receive_at_mail,
+          receive_reply_mail: receive_reply_mail
+        });
+        return;
+      }
+    }
+
+
+
 
     if (post_address) {
       try {
@@ -308,6 +349,7 @@ exports.setting = function (req, res, next) {
           zip:zip,
           country:country,
           region:region,
+         nickname:nickname,
           signature: signature,
           profile: profile,
           weibo: weibo,
@@ -334,6 +376,7 @@ exports.setting = function (req, res, next) {
       user.signature = signature;
       user.profile = profile;
       user.weibo = weibo;
+      user.nickname=nickname;
       user.renren= renren;
       user.gender= gender;
       user.receive_at_mail = receive_at_mail;
@@ -372,6 +415,7 @@ exports.setting = function (req, res, next) {
           zip : user.zip,
           country : user.country,
           region : user.region,
+         nickname:user.nickname,
           signature: user.signature,
           profile: user.profile,
           weibo: user.weibo,
@@ -403,6 +447,7 @@ exports.setting = function (req, res, next) {
           zip : user.zip,
           country : user.country,
           region : user.region,
+         nickname: user.nickname,
           signature: user.signature,
           profile: user.profile,
           weibo: user.weibo,

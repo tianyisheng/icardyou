@@ -1,5 +1,31 @@
 <%- partial('sidebar') %>
 
+    <script type="text/javascript">
+         
+        function $(str){
+            return (document.getElementById(str));
+        }
+         
+        function check_submit(){
+            if($("post_name").value ==""){ 
+                alert("请填写收件人姓名!");
+                $("post_name").focus();
+                return false;
+            }
+         if($("zip").value == ""){
+                alert("请填写收件人邮编!");
+                $("zip").focus();
+                return false;
+            }
+            if($("post_address").value == ""){
+                alert("请填写详细地址!");
+                $("post_address").focus();
+                return false;
+            }
+
+        }
+    </script>
+
 <div id='content'>
 	<div class='panel'>
 		<div class='header'>
@@ -20,7 +46,7 @@
 				<strong><%= success %></strong>
 			</div>
 			<% } %>
-			<form id='setting_form' class='form-horizontal' action='/setting' method='post'>
+			<form id='setting_form' class='form-horizontal' action='/setting' method='post' onsubmit="return check_submit();">
 				<div class='control-group'>
 					<label class='control-label' for='name'>用户名</label>
 					<div class='controls'>
@@ -33,22 +59,29 @@
 						<input class='input-xlarge readonly' id='email' name='email' size='30' type='text' readonly='true' value="<%= email %>" />
 					</div>
 				</div>
+				<div class='control-group'>
+					<label class='control-label' for='nickname'>昵称</label>
+					<div class='controls'>
+						<input class='input-xlarge' id='nickname' name='nickname' size='30' type='text'  value="<%= locals.nickname||name%>" /><span style="color:red">(可修改)</span>
+					</div>
+				</div>
+
                            <div class='control-group'>
 					<label class='control-label' for='gender'>性别</label>
 					<div class='controls'>
-						<select class="selectpicker data-size=3" id='gender' name='gender' value="<%= locals.gender ||''%>">
-                                                 <option value="男"> 男</option>
-                                                 <option value="女"> 女</option>
-                                                 <option value="保密"> 保密</option>
+						<select class="selectpicker show-tick data-size=3" id='gender' name='gender' value="<%= locals.gender ||''%>">
+                                                 <option value="男" <% if(locals.gender=="男") {%> selected <%}%> > 男</option>
+                                                 <option value="女" <% if(locals.gender=="女") {%>selected <%}%> > 女</option>
+                                                 <option value="保密" <% if(locals.gender=="保密") {%>selected<%}%> > 保密</option>
 	                                         </select>
 				        </div>
 				</div>
                            <div class='control-group'>
 					<label class='control-label' for='country'>国家</label>
 					<div class='controls'>
-						<select class="selectpicker data-size=2" id='country' name='country' value="<%= locals.country ||''%>">
-                                                 <option> 中国</option>
-                                                 <option> 海外</option>
+						<select id='country' name='country' value="<%= locals.country ||''%>">
+                                                 <option value="中国" <% if(locals.country=="中国") {%> selected <%}%> > 中国</option>
+                                                 <option value="海外" <% if(locals.country=="海外") {%> selected <%}%> > 海外</option>
 	                                         </select>
                                         </div>
 				</div>
@@ -56,43 +89,43 @@
                                       <label class='control-label' for='reigion'>省份</label>
                                         <div class='controls'>   
                                       
-						<select class="selectpicker data-size=35" id='region' name='region' value="<%= locals.region ||''%>">
+						<select  id='region' name='region' value="<%= locals.region ||''%>">
                                       
-                                      <option value="北京">北京</option>
-	<option value="2">天津</option>
-	<option value="3">上海</option>
-	<option value="4">广东</option>
-	<option value="5">广西</option>
-	<option value="6">河北</option>
-	<option value="7">河南</option>
-	<option value="8">湖北</option>
-	<option value="9">湖南</option>
-	<option value="10">福建</option>
-	<option value="11">山东</option>
-	<option value="12">安徽</option>
-	<option value="13">浙江</option>
-	<option value="14">四川</option>
-	<option value="15">重庆</option>
-	<option value="16">贵州</option>
-	<option value="17">云南</option>
-	<option value="18">江苏</option>
-	<option value="19">山西</option>
-	<option value="20">辽宁</option>
-	<option value="21">吉林</option>
-	<option value="22">内蒙古</option>
-	<option value="23">黑龙江</option>
-	<option value="24">西藏</option>
-	<option value="25">陕西</option>
-	<option value="26">甘肃</option>
-	<option value="27">青海</option>
-	<option value="28">宁夏</option>
-	<option value="29">新疆</option>
-	<option value="30">江西</option>
-	<option value="31">海南</option>
-	<option value="32">台湾</option>
-	<option value="33">香港</option>
-	<option value="34">澳门</option>
-  <option value="35">海外</option>
+                                      <option value="北京" <% if(locals.region=="北京") {%> selected <%}%> >北京</option>
+	<option value="上海"<% if(locals.region=="上海") {%> selected <%}%>>上海</option>
+	<option value="天津" <% if(locals.region=="天津") {%> selected <%}%>>天津</option>
+	<option value="重庆"<% if(locals.region=="重庆") {%> selected <%}%>>重庆</option>
+	<option value="黑龙江"<% if(locals.region=="黑龙江") {%> selected <%}%>>黑龙江</option>
+	<option value="吉林"<% if(locals.region=="吉林") {%> selected <%}%>>吉林</option>
+	<option value="辽宁"<% if(locals.region=="辽宁") {%> selected <%}%>>辽宁</option>
+	<option value="内蒙古"<% if(locals.region=="内蒙古") {%> selected <%}%>>内蒙古</option>
+	<option value="山东"<% if(locals.region=="山东") {%> selected <%}%>>山东</option>
+	<option value="山西"<% if(locals.region=="山西") {%> selected <%}%>>山西</option>
+	<option value="河北"<% if(locals.region=="河北") {%> selected <%}%>>河北</option>
+	<option value="河南"<% if(locals.region=="河南") {%> selected <%}%>>河南</option>
+	<option value="湖北"<% if(locals.region=="湖北") {%> selected <%}%>>湖北</option>
+	<option value="湖南"<% if(locals.region=="湖南") {%> selected <%}%>>湖南</option>
+	<option value="江苏"<% if(locals.region=="江苏") {%> selected <%}%>>江苏</option>
+	<option value="江西"<% if(locals.region=="江西") {%> selected <%}%>>江西</option>
+	<option value="安徽"<% if(locals.region=="安徽") {%> selected <%}%>>安徽</option>
+	<option value="福建"<% if(locals.region=="福建") {%> selected <%}%>>福建</option>
+	<option value="浙江"<% if(locals.region=="浙江") {%> selected <%}%>>浙江</option>
+	<option value="广东"<% if(locals.region=="广东") {%> selected <%}%>>广东</option>
+	<option value="广西"<% if(locals.region=="广西") {%> selected <%}%>>广西</option>
+	<option value="四川"<% if(locals.region=="海外") {%> selected <%}%>>四川</option>
+	<option value="贵州"<% if(locals.region=="贵州") {%> selected <%}%>>贵州</option>
+	<option value="云南"<% if(locals.region=="云南") {%> selected <%}%>>云南</option>
+	<option value="陕西"<% if(locals.region=="陕西") {%> selected <%}%>>陕西</option>
+	<option value="甘肃"<% if(locals.region=="甘肃") {%> selected <%}%>>甘肃</option>
+	<option value="青海"<% if(locals.region=="青海") {%> selected <%}%>>青海</option>
+	<option value="宁夏"<% if(locals.region=="宁夏") {%> selected <%}%>>宁夏</option>
+	<option value="新疆"<% if(locals.region=="新疆") {%> selected <%}%>>新疆</option>
+	<option value="西藏"<% if(locals.region=="西藏") {%> selected <%}%>>西藏</option>
+	<option value="海南"<% if(locals.region=="海南") {%> selected <%}%>>海南</option>
+	<option value="台湾"<% if(locals.region=="台湾") {%> selected <%}%>>台湾</option>
+	<option value="香港"<% if(locals.region=="海外") {%> selected <%}%>>香港</option>
+	<option value="澳门"<% if(locals.region=="海外") {%> selected <%}%>>澳门</option>
+        <option value="海外"<% if(locals.region=="海外") {%> selected <%}%>>海外</option>
          </select>
 
 		                  </div>
@@ -101,17 +134,17 @@
                                  <div class='control-group'>
 					<label class='control-label' for='post_name'>收件人姓名</label>
 					<div class='controls'>
-						<input class='input-xlarge' id='post_name' name='post_name' type='text' value="<%= locals.post_name || '' %>" />（*必填）
+						<input class='input-xlarge' id='post_name' name='post_name' type='text' value="<%= locals.post_name || '' %>" /><span style="color:red">(*必填)</span>
 					</div>
 	
                                         <label class='control-label' for='zip'>收件人邮编</label>
                                         <div class='controls'>
-						<input class='input-xlarge' id='zip' name='zip' type='text' value="<%= locals.zip || '' %>" />（*必填）
+						<input class='input-xlarge' id='zip' name='zip' type='text' value="<%= locals.zip || '' %>" /><span style="color:red">(*必填)</span>
 					</div>
 
                                            <label class='control-label' for='post_address'>详细地址</label>
                                         <div class='controls'>
-						<input class='input-xlarge' id='post_address' name='post_address' type='text' value="<%= locals.post_address || '' %>" /> （*必填）
+						<input class='input-xlarge' id='post_address' name='post_address' type='text' value="<%= locals.post_address || '' %>" /><span style="color:red">(*必填)</span>
 					</div>
 
 

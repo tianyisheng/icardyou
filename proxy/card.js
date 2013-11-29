@@ -7,16 +7,17 @@ var Topic = require('./topic');
 var Reply = require('./reply');
 
 /**
- * 根据用户ID，获取未读消息的数量
+ * 根据用户ID，创建一个新的Card，并且获得一个活跃用户的地址
  * Callback:
  * 回调函数参数列表：
  * - err, 数据库错误
- * - count, 未读消息数量
+ * - user, 匹配的用户 
  * @param {String} id 用户ID
- * @param {Function} callback 获取消息数量
  */
-exports.getMessagesCount = function (id, callback) {
-  Message.count({master_id: id, has_read: false}, callback);
+exports.createCard = function (id, callback) {
+ 
+    
+
 };
 
 
@@ -64,43 +65,4 @@ exports.getMessageById = function (id, callback) {
   });
 };
 
-/**
- * 根据用户ID，获取消息列表
- * Callback:
- * - err, 数据库异常
- * - messages, 消息列表
- * @param {String} userId 用户ID
- * @param {Function} callback 回调函数
- */
-exports.getMessagesByUserId = function (userId, callback) {
-  Message.find({master_id: userId}, [], {sort: [['create_at', 'desc']], limit: 20}, callback);
-};
 
-
-
-/**
- * 根据用户ID，获取 用户已发送消息列表
- * Callback:
- * - err, 数据库异常
- * - messages, 消息列表
- * @param {String} userId 用户ID
- * @param {Function} callback 回调函数
- */
-exports.getSentMessagesByUserId = function (userId, callback) {
-  Message.find({author_id: userId}, [], {sort: [['create_at', 'desc']], limit: 20}, callback);
-};
-
-
-
-
-/**
- * 根据用户ID，获取未读消息列表
- * Callback:
- * - err, 数据库异常
- * - messages, 未读消息列表
- * @param {String} userId 用户ID
- * @param {Function} callback 回调函数
- */
-exports.getUnreadMessageByUserId = function (userId, callback) {
-  Message.find({master_id: userId, has_read: false}, callback);
-};

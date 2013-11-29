@@ -61,6 +61,7 @@ exports.getMessageById = function (id, callback) {
         return callback(null, message);
       });
     }
+
   });
 };
 

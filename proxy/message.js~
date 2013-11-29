@@ -61,6 +61,7 @@ exports.getMessageById = function (id, callback) {
         return callback(null, message);
       });
     }
+
   });
 };
 
@@ -79,7 +80,7 @@ exports.getMessagesByUserId = function (userId, callback) {
 
 
 /**
- * 根据用户ID，获取已发消息列表
+ * 根据用户ID，获取 用户已发送消息列表
  * Callback:
  * - err, 数据库异常
  * - messages, 消息列表

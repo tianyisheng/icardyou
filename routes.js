@@ -72,9 +72,10 @@ module.exports = function (app) {
   app.post('/my/messages/send', auth.signinRequired, message.post);
 
   // card
-  app.get('/sendpostcard', card.send);
-  app.get('/receivepostcard', card.receive);
-
+  app.get('/card/sendpostcard', auth.signinRequired, card.send);
+  app.get('/card/receivepostcard', auth.signinRequired, card.receive);
+  app.post('/card/getAddress', auth.signinRequired, card.getAddress);
+  app.post('/card/receivepostcard', auth.signinRequired, card.receive);
 
   // tag
   app.get('/tags/edit', tag.edit_tags);

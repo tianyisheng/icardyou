@@ -77,6 +77,10 @@ module.exports = function (app) {
   app.post('/card/getAddress', auth.signinRequired, card.getAddress);
   app.post('/card/receivepostcard', auth.signinRequired, card.receive);
 
+  //供求
+  app.get('/supply', auth.signinRequired, card.supply);
+  app.post('/supply', auth.signinRequired, card.postSupply);
+
   // tag
   app.get('/tags/edit', tag.edit_tags);
   app.get('/tag/:name', tag.list_topic);

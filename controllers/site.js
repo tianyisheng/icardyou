@@ -16,7 +16,8 @@ var config = require('../config').config;
 var EventProxy = require('eventproxy');
 
 exports.index = function (req, res, next) {
-  var page = parseInt(req.query.page, 10) || 1;
+  var p = parseInt(req.query.p, 10) || 1;
+  var n=parseInt(req.query.n, 10) || 1; 
   var keyword = req.query.q || ''; // in-site search
   if (Array.isArray(keyword)) {
     keyword = keyword.join(' ');
@@ -24,7 +25,7 @@ exports.index = function (req, res, next) {
   keyword = keyword.trim();
   var limit = config.list_topic_count;
 
-  var render = function (tags, topics, hot_topics, stars, tops, no_reply_topics, pages) {
+  var render = function (tags, topics, activity, hot_topics, stars, tops, no_reply_topics, topic_pages,activity_pages) {
     var all_tags = tags.slice(0);
 
     // 计算最热标签
@@ -40,31 +41,41 @@ exports.index = function (req, res, next) {
     res.render('index', {
       tags: all_tags,
       topics: topics,
-      current_page: page,
+      activity:activity,
+      current_page: p,
+      current_activity: n,
       list_topic_count: limit,
       recent_tags: recent_tags,
       hot_topics: hot_topics,
       stars: stars,
       tops: tops,
       no_reply_topics: no_reply_topics,
-      pages: pages,
+      topic_pages: topic_pages,
+      activity_pages:activity_pages,
       keyword: keyword
     });
   };
 
-  var proxy = EventProxy.create('tags', 'topics', 'hot_topics', 'stars', 'tops', 'no_reply_topics', 'pages', render);
+  var proxy = EventProxy.create('tags', 'topics', 'activity', 'hot_topics', 'stars', 'tops', 'no_reply_topics', 'topic_pages','activity_pages', render);
   proxy.fail(next);
   // 取标签
   Tag.getAllTags(proxy.done('tags'));
 
-  var options = { skip: (page - 1) * limit, limit: limit, sort: [ ['top', 'desc' ], [ 'last_reply_at', 'desc' ] ] };
-  var query = {};
+  var options1 = { skip: (p - 1) * limit, limit: limit, sort: [ ['top', 'desc' ], [ 'last_reply_at', 'desc' ] ] };
+  var options2 = { skip: (n - 1) * limit, limit: limit, sort: [ ['top', 'desc' ], [ 'last_reply_at', 'desc' ] ] };
+  var query1 = {topic_type:"话题"};
+  var query2 = {topic_type:{$ne:"话题"}};
   if (keyword) {
     keyword = keyword.replace(/[\*\^\&\(\)\[\]\+\?\\]/g, '');
-    query.title = new RegExp(keyword, 'i');
+    query1.title = new RegExp(keyword, 'i');
+    query2.title = new RegExp(keyword, 'i');
   }
   // 取主题
-  Topic.getTopicsByQuery(query, options, proxy.done('topics'));
+  Topic.getTopicsByQuery(query1, options1, proxy.done('topics'));
+
+  // 取活动
+  Topic.getTopicsByQuery(query2, options2, proxy.done('activity'));
+
   // 取热门主题
   Topic.getTopicsByQuery({}, { limit: 5, sort: [ [ 'visit_count', 'desc' ] ] }, proxy.done('hot_topics'));
   // 取星标用户
@@ -74,9 +85,17 @@ exports.index = function (req, res, next) {
   // 取0回复的主题
   Topic.getTopicsByQuery({ reply_count: 0 }, { limit: 5, sort: [ [ 'create_at', 'desc' ] ] },
   proxy.done('no_reply_topics'));
-  // 取分页数据
-  Topic.getCountByQuery(query, proxy.done(function (all_topics_count) {
-    var pages = Math.ceil(all_topics_count / limit);
-    proxy.emit('pages', pages);
+  // 取话题分页数据
+  Topic.getCountByQuery(query1, proxy.done(function (all_topics_count) {
+    var topic_pages = Math.ceil(all_topics_count / limit);
+    proxy.emit('topic_pages', topic_pages);
   }));
+
+  // 取活动分页数据
+  Topic.getCountByQuery(query2, proxy.done(function (all_topics_count) {
+    var  activity_pages = Math.ceil(all_topics_count / limit);
+    proxy.emit('activity_pages', activity_pages);
+  }));
+
+
 };

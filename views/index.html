@@ -14,8 +14,9 @@
       <% if (locals.topics && topics.length > 0) { %>
       <%- partial('topic/list', {
         topics: topics,
-        pages: pages,
-        current_pages: current_page,
+        topic_pages: topic_pages,
+        current_activity: current_activity,
+        current_page: current_page,
         base: keyword ? ('/?q=' + keyword) : '/'
       }) %>
       <% } else { %>
@@ -34,11 +35,12 @@
           </a>
         <% } %>
       </div>
-      <% if (locals.topics && topics.length > 0) { %>
-      <%- partial('topic/list', {
-        topics: topics,
-        pages: pages,
-        current_pages: current_page,
+      <% if (locals.activity && activity.length > 0) { %>
+      <%- partial('topic/list2', {
+        topics: activity,
+        activity_pages: activity_pages,
+        current_activity: current_activity,
+        current_page: current_page,
         base: keyword ? ('/?q=' + keyword) : '/'
       }) %>
       <% } else { %>

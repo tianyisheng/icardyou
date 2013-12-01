@@ -1,0 +1,56 @@
+<div id="topic_list">
+	<%- partial('topic/abstract', {collection:topics, as:'topic'}) %>
+</div>
+<div class='pagination' id='pagination' current_activity='<%= current_activity %>'>
+	<ul>
+		<% var base_url = base + (base.indexOf('?') < 0 ? '?' : '&') + 'p='+current_page+'&n='; %>
+		<% if (current_activity == 1) { %>
+			<li class='disabled'><a>«</a></li>
+		<% } else { %>
+			<li><a href="<%= base_url %>1">«</a></li>
+		<% } %>
+
+		<%
+			var page_start1 = current_activity - 2 > 0 ? current_activity - 2 : 1;
+			var page_end1 = page_start1 + 4 >= activity_pages ? activity_pages : page_start1 + 4;
+		%> 
+
+		<% if (page_start1 > 1) { %>
+			<li><a>...</a></li>
+		<% } %>
+
+		<% for(var i = page_start1; i <= page_end1; i++) { %>
+			<% if (i === current_activity) { %>
+				<li class='disabled'><a><%= i %></a></li>
+			<% } else { %>
+				<li><a href='<%= base_url + i %>'><%= i %></a></li>
+			<% } %>
+		<% } %>
+
+		<% if (page_end1 < activity_pages ) { %>
+			<li><a>...</a></li>
+		<% } %>
+
+		<% if (current_activity == activity_pages) { %>
+			<li class='disabled'><a>»</a></li>
+		<% } else { %>
+			<li><a href='<%= base_url + activity_pages %>'>»</a></li>
+		<% } %>
+	</ul>
+</div>
+<script>
+	$(document).ready(function () {
+		var $nav = $('#pagination');
+		var current_activity = $nav.attr('current_activity');	
+		if (current_activity) {
+			$nav.find('li').each(function(){
+				var $li = $(this);
+				var $a = $li.find('a');
+				if($a.html() == current_activity){
+					$li.addClass('active');
+					$a.removeAttr('href');
+				}
+			});
+		}
+	});
+</script>

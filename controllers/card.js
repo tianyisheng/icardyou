@@ -58,3 +58,15 @@ exports.getAddress = function (req, res, next) {
        res.render('card/gotAddress',{zip:card.post_zip, name:card.post_name, id: card.receiver_id,address:card.post_mark_address});   
   });
 };
+
+
+
+exports.supply = function (req, res, next) {
+  if (!req.session || !req.session.user) {
+    res.send('forbidden!');
+    return;
+  }
+     res.render('card/supply');  
+   
+  };
+

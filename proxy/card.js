@@ -1,7 +1,7 @@
 var EventProxy = require('eventproxy');
-
-var Message = require('../models').Message;
-
+var models = require('../models');
+var Card = models.Card;
+var Counter =  require('./counter');
 var User = require('./user');
 var Topic = require('./topic');
 var Reply = require('./reply');
@@ -16,53 +16,31 @@ var Reply = require('./reply');
  */
 exports.createCard = function (id, callback) {
  
-    
-
-};
-
-
-/**
- * 根据消息Id获取消息
- * Callback:
- * - err, 数据库错误
- * - message, 消息对象
- * @param {String} id 消息ID
- * @param {Function} callback 回调函数
- */
-exports.getMessageById = function (id, callback) {
-  Message.findOne({_id: id}, function (err, message) {
-    if (err) {
-      return callback(err);
-    }
-    if (message.type === 'reply' || message.type === 'reply2' || message.type === 'at') {
-      var proxy = new EventProxy();
-      proxy.assign('author_found', 'topic_found', 'reply_found', function (author, topic, reply) {
-        message.author = author;
-        message.topic = topic;
-        message.reply = reply;
-        if (!author || !topic) {
-          message.is_invalid = true;
-        }
-        return callback(null, message);
-      }).fail(callback); // 接收异常
-      User.getUserById(message.author_id, proxy.done('author_found'));
-      Topic.getTopicById(message.topic_id, proxy.done('topic_found'));
-      Reply.getReplyById(message.reply_id, proxy.done('reply_found'));
-    }
-
-    if (message.type === 'follow') {
-      User.getUserById(message.author_id, function (err, author) {
+// TO DO: change getActiveUser method
+  User.getActiveUser(id, function(err, user) {
         if (err) {
-          return callback(err);
+          return callback(err, null);
         }
-        message.author = author;
-        if (!author) {
-          message.is_invalid = true;
-        }
-        return callback(null, message);
-      });
-    }
+       
+
+        Counter.increment('card',function(err1,result){
+           if(err)
+           {
+              console.error('counter on photo save error:'+err);
+              return callback(err1, null);
+           }
+             var card =new Card(); 
+             console.log(err1);
+             console.log(result);           
+             card.sender_id=id;
+             card.post_name = user.post_name;
+             card.receiver_id=user._id;
+             card.post_mark_address=user.post_address;
+             card.post_zip=user.zip;
+             card.ID=result.next;
+             card.save(callback);               
+         });
+
   });
+              
 };
-
-

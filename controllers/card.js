@@ -50,38 +50,11 @@ exports.getAddress = function (req, res, next) {
     return;
   }
 
-  var message_id = req.body.message_id;
-  Card.createCard(req.session.user._id, function (err, user) {
+  Card.createCard(req.session.user._id, function (err, card) {
        if( err){      
-         return res.render('card/getAddress', {error: '数据库异常，稍后再试 (v.v)',name:user.name,nickname:nickname, sent: sent, received:user.sent_count, send:user.send_count, allowed: user.allowed-user.send_count});
+         return res.render('card/gotAddress', {error: '数据库异常，稍后再试 (v.v)'});
        }
-       res.render();   
-  });
-};
-
-
-
-
-exports.mark_all_read = function (req, res, next) {
-  if (!req.session || !req.session.user) {
-    res.send('forbidden!');
-    return;
-  }
-  // TODO: 直接做update，无需查找然后再逐个修改。
-  Message.getUnreadMessageByUserId(req.session.user._id, function (err, messages) {
-    if (messages.length === 0) {
-      res.json({'status': 'success'});
-      return;
-    }
-    var proxy = new EventProxy();
-    proxy.after('marked', messages.length, function () {
-      res.json({'status': 'success'});
-    });
-    proxy.fail(next);
-    for (var i = 0; i < messages.length; i++) {
-      var message = messages[i];
-      message.has_read = true;
-      message.save(proxy.done('marked'));
-    }
+        
+       res.render('card/gotAddress',{zip:card.post_zip, name:card.post_name, id: card.receiver_id,address:card.post_mark_address});   
   });
 };

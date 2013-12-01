@@ -1,0 +1,104 @@
+<%- partial('sidebar') %>
+<script type="text/javascript">
+function ChangeButton()
+{
+    
+    if(document.getElementById("iagree").checked)
+    {
+        document.getElementById("sendbutton").value = "正在提交，请勿重复点击";
+    }
+}
+
+function checkSubmit()
+{
+    
+    if(!document.getElementById("iagree").checked)
+    {
+      alert("同意以上条款，才能获取配对地址");
+        return false;
+    }
+}
+</script>
+
+<div id='content'>
+  <div class='panel'>
+    <div class='header'>
+      <ul class='breadcrumb'>
+        <li><a href='/'>主页</a><span class='divider'>/</span></li>
+        <li class='active'>发送明信片</li>
+      </ul>
+    </div>
+
+
+                     <% if(locals.error){ %>
+			<div class="alert alert-error">	
+				<a class="close" data-dismiss="alert" href="#">&times;</a>
+				<strong><%= error %></strong>
+			</div>
+			<% } %>
+    <div class='inner topic'>
+      <hr />
+
+
+      <div id="content">
+            <table width="90%" border="0" cellspacing="5" cellpadding="0" style="float: left">
+                <tr>
+                    <td>
+                        <table id="sentpostcards" class="olt">
+	<tr>
+		<td class="list" nowrap="nowrap">
+                                        <div align="center">
+                                            类型</div>
+                                    </td>
+		<td class="list" nowrap="nowrap">
+                                        <div align="center">
+                                            明信片ID</div>
+                                    </td>
+		<td class="list" nowrap="nowrap">
+                                        <div align="center">
+                                            目前状态</div>
+                                    </td>
+		<td class="list">
+                                        配对好友
+                                    </td>
+		<td class="list" nowrap="nowrap">
+                                        <div align="center">
+                                            发送时间</div>
+                                    </td>
+		<td class="list">
+                                        <div align="center">
+                                            收到时间</div>
+                                    </td>
+		<td class="list" nowrap="nowrap">
+                                        <div align="center">
+                                            重获地址</div>
+                                    </td>
+		<td class="list">
+                                        <div align="center">
+                                            上传图片</div>
+                                    </td>
+		<td class="list">
+                                        &nbsp;
+                                    </td>
+	</tr>
+	<tr id="tr634964" onmouseover="ChangeColor('634964','#FFEFF7')" onmouseout="ChangeColor('634964','#FFF')">
+		<td style="text-align:center">配对</td>
+		<td style="text-align:center"><a href='/Postcard/634964/'>BJ-634964</a></td>
+		<td id="state634964" style="text-align:center;" class="orange">已发</td>
+		<td><a href='/User/24860/'>蛋蛋巨无霸</a></td>
+		<td style="text-align:center">2013-11-06</td>
+		<td style="text-align:center">未收到</td>
+		<td onclick="lostaddress('24860',event)" style="cursor :pointer;text-align:center;color:blue;text-decoration: underline;">忘记地址</td>
+		<td style="text-align:center"><a href='/Postcard/634964/'>上传图片</a></td>
+		<td style="text-align:center">&nbsp;</td>
+	</tr>
+</table>
+
+                   
+          <a class="btn msg_btn" href="/user/<%=locals.name%>#sent" target="_blank">查看所有已发明信片</a>
+            <br clear="all">
+        </div>
+ </form>
+</div>
+
+

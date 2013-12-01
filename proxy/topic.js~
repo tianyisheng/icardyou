@@ -132,9 +132,9 @@ exports.getTopicsByQuery = function (query, opt, callback) {
  */
 exports.getFullTopic = function (id, callback) {
   var proxy = new EventProxy();
-  var events = ['topic', 'tags', 'author', 'replies', 'topic_type'];
-  proxy.assign(events, function (topic, tags, author, replies, topic_type) {
-    callback(null, '', topic, tags, author, replies, topic_type);
+  var events = ['topic', 'tags', 'author', 'replies'];
+  proxy.assign(events, function (topic, tags, author, replies) {
+    callback(null, '', topic, tags, author, replies);
   }).fail(callback);
 
   Topic.findOne({_id: id}, proxy.done(function (topic) {

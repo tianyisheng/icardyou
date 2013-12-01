@@ -74,7 +74,7 @@ exports.getMessageById = function (id, callback) {
  * @param {Function} callback 回调函数
  */
 exports.getMessagesByUserId = function (userId, callback) {
-  Message.find({master_id: userId}, [], {sort: [['create_at', 'desc']], limit: 20}, callback);
+  Message.find({master_id: userId}, {}, {sort: [['create_at', 'desc']], limit: 20}, callback);
 };
 
 
@@ -88,7 +88,7 @@ exports.getMessagesByUserId = function (userId, callback) {
  * @param {Function} callback 回调函数
  */
 exports.getSentMessagesByUserId = function (userId, callback) {
-  Message.find({author_id: userId}, [], {sort: [['create_at', 'desc']], limit: 20}, callback);
+  Message.find({author_id: userId}, {}, {sort: [['create_at', 'desc']], limit: 20}, callback);
 };
 
 

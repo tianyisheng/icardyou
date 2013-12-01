@@ -1,6 +1,24 @@
 var models = require('../models');
 var User = models.User;
 
+
+/**
+ * 查找活跃用户
+ * Callback:
+ * - err, 数据库异常
+ * - user, 用户
+ * @param {String} id 寄送人id，不能返回该id的用户
+ * @param {city} 同省，优先同省
+ * @param {Function} callback 回调函数
+ */
+// TO DO: get activeuser
+exports.getActiveUser = function (id, callback) {
+  User.findOne({},callback);
+};
+
+
+
+
 /**
  * 根据用户名列表查找用户列表
  * Callback:
@@ -86,7 +104,7 @@ exports.getUsersByIds = function (ids, callback) {
  * @param {Function} callback 回调函数
  */
 exports.getUsersByQuery = function (query, opt, callback) {
-  User.find(query, [], opt, callback);
+  User.find(query, {}, opt, callback);
 };
 
 /**

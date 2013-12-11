@@ -1,0 +1,47 @@
+<%- partial('sidebar') %>
+
+        <div id="content">
+
+  <div class='panel'>
+    <div class='header'>
+      <ul class='breadcrumb'>
+        <li><a href='/'>主页</a><span class='divider'>/</span></li>
+        <li class='active'>供求</li>
+      </ul>
+    </div>
+
+                     <% if(locals.error){ %>
+			<div class="alert alert-error">	
+				<a class="close" data-dismiss="alert" href="#">&times;</a>
+				<strong><%= error %></strong>
+			</div>
+			<% } %>
+
+
+           
+
+  <div class="inner">
+      <div class="header clearfix">
+        明信片
+      </div>
+
+      <div>
+ <a class="btn msg_btn" href="/mysupply" target="_blank">添加供求信息</a>
+      </div>
+      <% if (locals.card_supply && card_supply.length > 0) { %>
+      <%- partial('card/list', {
+        card_supply: card_supply,
+        card_pages: card_pages,
+        current_page: current_page,
+        base: keyword ? ('/?q=' + keyword) : '/'
+      }) %>
+      <% } else { %>
+      <div class='inner'>
+        <p>无明信片</p>
+      </div>
+      <% } %>
+    </div>
+
+
+<div>
+<div>

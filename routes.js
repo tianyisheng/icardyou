@@ -79,7 +79,9 @@ module.exports = function (app) {
 
   //供求
   app.get('/supply', auth.signinRequired, card.supply);
-  app.post('/supply', auth.signinRequired, card.postSupply);
+  app.get('/mysupply', auth.signinRequired, card.mysupply);
+  app.post('/mysupply', auth.signinRequired, card.savesupply);
+  app.post('/mysupply/delete', auth.signinRequired, card.deletesupply);
 
   // tag
   app.get('/tags/edit', tag.edit_tags);

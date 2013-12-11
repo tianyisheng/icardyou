@@ -23,6 +23,7 @@ require('./relation');
 require('./message');
 require('./card');
 require('./counter');
+require('./card_supply');
 
 exports.Tag = mongoose.model('Tag');
 exports.User = mongoose.model('User');
@@ -36,3 +37,4 @@ exports.Relation = mongoose.model('Relation');
 exports.Message = mongoose.model('Message');
 exports.Card = mongoose.model('Card');
 exports.Counter =mongoose.model('Counter');
+exports.Card_Supply =mongoose.model('Card_Supply');

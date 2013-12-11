@@ -4,14 +4,14 @@ var ObjectId = Schema.ObjectId;
 
 var TopicSchema = new Schema({
   title: { type: String },
-  topic_type:{type: String},
+  topic_type:{type: String, index:true},
   send_type:{type:String},
   request_type:{type:String},
   content: { type: String },
   number_limit:{type:Number,default:1000},
   number_attendent:{type:Number,default:0},
   image_url:[String],
-  author_id: { type: ObjectId },
+  author_id: { type: ObjectId, index: true },
   top: { type: Boolean, default: false },
   reply_count: { type: Number, default: 0 },
   visit_count: { type: Number, default: 0 },

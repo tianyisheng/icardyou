@@ -1,12 +1,55 @@
 <%- partial('sidebar') %>
 
-        <div id="content">
+<script type="text/javascript">
 
+function isNull( str ){ 
+   if ( str == "" ) return true; 
+   var regu = "^[ ]+$"; 
+   var re = new RegExp(regu); 
+   return re.test(str); 
+} 
+
+function checkSubmit()
+{
+    var info= document.getElementById("info");
+    var url = document.getElementById("url");
+    if(!info.value.length)
+    {
+      alert("说 明 不能为空");
+        info.focus();
+        return false;
+    }
+    if(info.value.length>50)
+     {
+      alert("说 明 过长");
+        info.focus();
+        return false;
+
+     }
+    if(!url.value.length)
+    {
+         alert("图片链接不能为空");
+         url.focus();
+    }
+    if(url.value.length>80)
+     {
+      alert("图片链接网址过长");
+        url.focus();
+        return false;
+
+     }
+
+
+}
+</script>
+
+
+ <div id="content">
   <div class='panel'>
     <div class='header'>
       <ul class='breadcrumb'>
         <li><a href='/'>主页</a><span class='divider'>/</span></li>
-        <li class='active'>收到明信片</li>
+        <li class='active'>供求</li>
       </ul>
     </div>
 
@@ -18,26 +61,39 @@
 			</div>
 			<% } %>
 
-            <h1> 所有可以提供的明信片</h1>
+            <h3> 所有可以提供的明信片</h3>
             <div id="supplylist">
-            <div id="2618" class="supply_div"><font color='red'>[求]</font>:功能测试 <a href="http://image.zcool.com.cn/img3/39/56/b_1369359459936.jpg" target="_blank">查看图片</a> <span class="del_span" onclick="ShowDelete('2618',event)">删除</span></div></div>
-            <div style="margin-top: 20px;">
-                <table id="type" border="0">
-	<tr>
-		<td><input id="type_0" type="radio" name="type" value="1" checked="checked" /><label for="type_0">供</label></td><td><input id="type_1" type="radio" name="type" value="2" /><label for="type_1">求</label></td>
-	</tr>
-</table>
+
+               
+             </div>  
+                <form method="post" onsubmit="return checkSubmit();" action="/mysupply/" >
+               <table id="type" border="0" align="center" >
+	        <tr>
+		<td align="center">
+               <input id="type_0" type="radio" name="type" value="供" checked="checked" />
+                <label for="type_0">供</label>
+               </td>
+                <td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+               <td align="center">
+                 <input id="type_1" type="radio" name="type" value="求" /><label for="type_1">求</label>
+                </td>
+                </tr>
+                </table>
+                   <div align="center">
                 <br />
                 说&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;明:
-                <input name="supply" type="text" id="supply" style="width:300px;" />
+                <input name="info" type="text" id="info" style="width:300px;" />
                 <br />
                 图片链接:
-                <input name="link" type="text" id="link" style="width:300px;" />
-                <input type="submit" name="add" value="添加" id="add" />
-                <br />
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                (http://www.icardyou.com/images/logo.gif)
-            </div>
+                <input name="url" type="text" id="url" style="width:300px;" />
+                <input type='hidden' name='_csrf' value='<%= csrf %>' /> 
+                
+                  <br/> (示例: http://www.icardyou.com/images/logo.gif)
+                <br/>
+                <input type="submit" name="add" class="btn btn-success" value="添加" id="add" />
+                </form>
+                </div>
+         
         </div>
         <br clear="all">
         <!--消息提示框 -->

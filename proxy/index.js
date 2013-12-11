@@ -10,3 +10,4 @@ exports.TopicTag = require('./topic_tag');
 exports.TopicCollect = require('./topic_collect');
 exports.Card= require('./card');
 exports.Counter= require('./counter');
+exports.Card_Supply= require('./card_supply');
